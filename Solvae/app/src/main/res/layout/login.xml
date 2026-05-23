@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.LoginActv"
+    android:orientation="vertical"
+    android:background="@color/backG"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.1"
+    android:orientation="vertical"
+    android:padding="6dp"
+
+   >
+    <TextView
+
+        android:id="@+id/tvTopLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="left"
+        android:textSize="30sp"
+        android:text="@string/logintxt1"/>
+    <TextView
+
+        android:id="@+id/tvTopLogin2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textStyle="bold"
+        android:gravity="left"
+        android:textSize="26sp"
+        android:text="@string/logintxt2"/>
+
+
+</LinearLayout>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="4"
+    android:background="@drawable/background"
+    tools:ignore="MissingClass"
+
+
+    >
+
+    <ImageView
+        android:id="@+id/ivLogolg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/solvae_logo"/>
+    <ImageView
+        android:id="@+id/ivLogotxtlg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@mipmap/solvaetxt"
+        app:layout_constraintTop_toBottomOf="@id/ivLogolg"/>
+
+    <EditText
+        style="@style/edtlog"
+        android:id="@+id/edtlogin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivLogotxtlg"
+        />
+    <EditText
+        style="@style/edtpswdlog"
+        android:id="@+id/edtsenha"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtlogin"
+        />
+    <Button
+        style="@style/btnllog"
+        android:id="@+id/btlog"
+        app:layout_constraintTop_toBottomOf="@id/edtsenha"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        />
+
+    <TextView
+
+        android:id="@+id/tvcadastro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:text="@string/register"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/btlog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</LinearLayout>

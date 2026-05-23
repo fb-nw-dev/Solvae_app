@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="ocean">#F00A029A</color>
+    <color name="backG">#BFC9C9</color>
+    <color name="endocean">#01012D</color>
+    <color name="edttxtlog">#79ffffff</color>
+    <color name="cornerslogedttxt">#CED2D2E0</color>
+    <color name="topmenu">#CE7474F0</color>
+</resources>

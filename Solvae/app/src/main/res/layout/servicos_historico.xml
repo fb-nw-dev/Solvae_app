@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ServiçosHistorico"
+    android:orientation="vertical">
+
+    <!-- CABEÇALHO (Fixo no topo) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/ocean"
+        android:padding="8dp">
+
+        <ImageButton
+            android:id="@+id/menubar"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:src="@drawable/menu"
+            android:backgroundTint="@null"
+            android:background="@color/ocean"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingStart="8dp">
+
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/search_button"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center"
+            android:src="@drawable/search"
+            android:backgroundTint="@null"
+            android:background="@color/ocean"
+            />
+    </LinearLayout>
+
+    <!-- CONTEÚDO CENTRAL (Rola se for grande, mas não empurra o menu) -->
+    <!-- O segredo está no layout_weight="1" e height="0dp" -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            >
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/container_componets"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_historico"
+                />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- MENU INFERIOR (Fixo no rodapé) -->
+    <LinearLayout
+        android:id="@+id/botmenu"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:background="@color/ocean"
+        android:elevation="8dp"
+        android:gravity="center_vertical">
+
+        <!-- Botão 1 -->
+        <LinearLayout
+            android:id="@+id/btn_servicos"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/search"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Serviços"
+                android:textSize="10sp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <!-- Botão 2 -->
+        <LinearLayout
+            android:id="@+id/btn_adicionar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/circlep"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Adicionar"
+                android:textSize="10sp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <!-- Botão 3 -->
+        <LinearLayout
+            android:id="@+id/btn_contratos"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/handshake_1_"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contratos"
+                android:textSize="10sp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
