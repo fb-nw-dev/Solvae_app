@@ -9,7 +9,6 @@
     android:background="@color/backG"
     tools:context=".activity.MenuSevices">
 
-    <!-- CABEÇALHO (Fixo no topo) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,8 +32,22 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingStart="8dp">
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
 
+            <EditText
+                android:id="@+id/edit_search"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/edittext_cad"
+                android:hint="Pesquisar serviços..."
+                android:inputType="text"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </LinearLayout>
 
@@ -49,8 +62,6 @@
             />
     </LinearLayout>
 
-    <!-- CONTEÚDO CENTRAL (Rola se for grande, mas não empurra o menu) -->
-    <!-- O segredo está no layout_weight="1" e height="0dp" -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -74,7 +85,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- MENU INFERIOR (Fixo no rodapé) -->
     <LinearLayout
         android:id="@+id/botmenu"
         android:layout_width="match_parent"
@@ -84,7 +94,6 @@
         android:elevation="8dp"
         android:gravity="center_vertical">
 
-        <!-- Botão 1 -->
         <LinearLayout
             android:id="@+id/btn_servicos"
             android:layout_width="0dp"
@@ -98,7 +107,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/scroll"
-                 />
+                />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +116,6 @@
                 android:textColor="@color/white"/>
         </LinearLayout>
 
-        <!-- Botão 2 -->
         <LinearLayout
             android:id="@+id/btn_adicionar"
             android:layout_width="0dp"
@@ -121,7 +129,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/circlep"
-                 />
+                />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -130,7 +138,6 @@
                 android:textColor="@color/white" />
         </LinearLayout>
 
-        <!-- Botão 3 -->
         <LinearLayout
             android:id="@+id/btn_contratos"
             android:layout_width="0dp"
@@ -144,7 +151,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/handshake_1_"
-                 />
+                />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

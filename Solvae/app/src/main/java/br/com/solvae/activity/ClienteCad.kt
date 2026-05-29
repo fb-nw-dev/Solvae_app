@@ -9,7 +9,7 @@ class ClienteCad : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.cliente_cadastro)
+        setContentView(R.layout.activity_cliente_cadastro)
 
     }
 }

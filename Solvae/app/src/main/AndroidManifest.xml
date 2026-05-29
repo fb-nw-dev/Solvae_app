@@ -18,7 +18,7 @@
             android:name=".activity.MenuBar"
             android:exported="false" />
         <activity
-            android:name=".activity.ServiçosHistorico"
+            android:name=".activity.ServicosHistorico"
             android:exported="false" />
         <activity
             android:name=".activity.LoginActv"

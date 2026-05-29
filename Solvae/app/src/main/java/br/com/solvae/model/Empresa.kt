@@ -23,5 +23,5 @@ data class Empresa(
     @SerializedName("Cidade") val cidade: String,
     @SerializedName("UF") val uf: String,
     @SerializedName("CEP") val cep: String,
-
+    @SerializedName("Usuario_Login_idUsuario_Login") val usuarioLoginId: Int
     )
