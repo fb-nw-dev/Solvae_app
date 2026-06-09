@@ -42,6 +42,7 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -51,4 +52,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("com.google.code.gson:gson:2.10.1")
+    // Retrofit (Biblioteca principal)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    // Conversor Gson (Para transformar o JSON que vem da API em objetos Kotlin/Java automaticamente)
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 }

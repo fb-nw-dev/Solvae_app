@@ -12,7 +12,7 @@ import br.com.solvae.model.Servico
 
 class HistoricoServAdapter: ListAdapter<Servico , HistoricoServAdapter.HistoricoViewHolder>(DIFF) {
 
-    private var itemClickHistorico: ((posicao: Int)-> Unit)? = null
+   var itemClickHistorico: ((posicao: Int)-> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoricoViewHolder {
         return HistoricoViewHolder.create(parent, itemClickHistorico)
@@ -30,11 +30,11 @@ class HistoricoServAdapter: ListAdapter<Servico , HistoricoServAdapter.Historico
     companion object {
         private val DIFF = object: DiffUtil.ItemCallback<Servico>() {
             override fun areItemsTheSame(oldItem: Servico, newItem: Servico): Boolean {
-                return oldItem.idServ == newItem.idServ
+                return oldItem == newItem
             }
 
             override fun areContentsTheSame(oldItem: Servico, newItem: Servico): Boolean {
-                return oldItem.idServ == newItem.idServ
+                return oldItem == newItem
             }
 
         }

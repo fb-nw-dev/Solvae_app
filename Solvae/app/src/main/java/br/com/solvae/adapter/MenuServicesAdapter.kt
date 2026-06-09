@@ -11,7 +11,7 @@ import br.com.solvae.model.Servico
 
 class MenuServicesAdapter: ListAdapter<Servico, MenuServicesAdapter.MenuServicesViewHolder>(DIFF) {
 
-    private var itemClickServico: ((posicao: Int)-> Unit)? = null
+    var itemClickServico: ((posicao: Int)-> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuServicesViewHolder {
         return MenuServicesViewHolder.create(parent, itemClickServico)
@@ -29,11 +29,11 @@ class MenuServicesAdapter: ListAdapter<Servico, MenuServicesAdapter.MenuServices
     companion object {
         private val DIFF = object: DiffUtil.ItemCallback<Servico>() {
             override fun areItemsTheSame(oldItem: Servico, newItem: Servico): Boolean {
-                return oldItem.idServ == newItem.idServ
+                return oldItem == newItem
             }
 
             override fun areContentsTheSame(oldItem: Servico, newItem: Servico): Boolean {
-                return oldItem.idServ == newItem.idServ
+                return oldItem == newItem
             }
 
         }
@@ -48,7 +48,7 @@ class MenuServicesAdapter: ListAdapter<Servico, MenuServicesAdapter.MenuServices
 
             itemServicoBinding.tvTipoServ.text = servico.tipoServ
             itemServicoBinding.tVEspec.text = servico.Espec
-            itemServicoBinding.tVValor.text = servico.valorServ
+            itemServicoBinding.tVValor.text = "R$ ${servico.valorServ}"
             itemServicoBinding.llDetalhes.setOnClickListener{
                 itemClickServico?.invoke(posicao)
             }

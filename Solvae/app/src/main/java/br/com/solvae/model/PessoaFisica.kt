@@ -1,11 +1,9 @@
-
 package br.com.solvae.model
 
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class PessoaFisica(
-
     @SerializedName("idPF") val idPf : Int? = null,
     @SerializedName("Nome") val nome : String,
     @SerializedName("Data_Nasc") val dataNasc : String,
@@ -17,5 +15,8 @@ data class PessoaFisica(
     @SerializedName("Telefone") val telefone : String,
     @SerializedName("Sexo") val sexo : String,
     @SerializedName("CPF") val cpf : String,
-    @SerializedName("Usuario_Login_idUsuario_Login") val usuarioLoginId: Int
-)
+    @SerializedName("Usuario_Login_idUsuario_Login") val usuarioLoginId: Int,
+
+    // COMPOSIÇÃO: Diz ao Retrofit para enviar os dados de login juntos
+    @SerializedName("login") val login: Login
+) : Serializable
