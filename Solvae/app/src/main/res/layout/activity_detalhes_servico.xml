@@ -49,90 +49,186 @@
             android:padding="12dp"
             android:layout_margin="12dp">
 
-
-                    <TextView
-                        android:id="@+id/tvDetalheTipo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Tipo do Serviço"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="4dp"/>
-
-                    <TextView
-                        android:id="@+id/tvDetalheEspec"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Especialidade"
-                        android:textSize="16sp"
-                        android:textColor="#666666"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:id="@+id/tvDetalheValor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Valor: R$ 0,00"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#2E7D32"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:id="@+id/tvDetalheDescricao"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Descrição detalhada do serviço aqui..."
-                        android:textSize="16sp"
-                        android:layout_marginBottom="24dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#DDDDDD"
-                        android:layout_marginBottom="24dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Informações do Anunciante"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="12dp"/>
-
-                    <TextView
-                        android:id="@+id/tvNomeAnunciante"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Carregando nome..."
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp"/>
-
-                    <TextView
-                        android:id="@+id/tvContatoAnunciante"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Carregando contato..."
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp"/>
-
-                    <TextView
-                        android:id="@+id/tvLocalizacaoAnunciante"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Carregando localização..."
-                        android:textSize="16sp"
-                        android:layout_marginBottom="32dp"/>
-            <Button
-                android:id="@+id/btnCadastrar"
-                style="@style/btncad"
+            <TextView
+                android:id="@+id/tvDetalheTipo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Solicitar Serviço" />
+                android:text="Tipo do Serviço"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tvDetalheEspec"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Especialidade"
+                android:textSize="16sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/tvDetalheValor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Valor Unitário: R$ 0,00"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#2E7D32"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvDetalheDescricao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descrição detalhada do serviço aqui..."
+                android:textSize="16sp"
+                android:layout_marginBottom="24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#DDDDDD"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Informações do Anunciante"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/tvNomeAnunciante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Carregando nome..."
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tvContatoAnunciante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Carregando contato..."
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tvLocalizacaoAnunciante"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Carregando localização..."
+                android:textSize="16sp"
+                android:layout_marginBottom="24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#DDDDDD"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Preencha os Dados para Solicitação"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilQuantidadeServico"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="Quantidade de Serviços">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tietQuantidadeServico"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilLocalServico"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Local da Prestação (Endereço)">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tietLocalServico"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPostalAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tvValorTotalCalculado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Valor Total: R$ 0,00"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#2E7D32"
+                android:layout_marginBottom="24dp"
+                android:textAlignment="viewEnd" />
+
+            <!-- BOTÕES DINÂMICOS DO FLUXO (Substituem o antigo btnCadastrar) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Botão para Solicitar (Status 0 -> 1) -->
+                <Button
+                    android:id="@+id/btnSolicitar"
+                    style="@style/btncad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Solicitar Serviço"
+                    android:visibility="gone" />
+
+                <!-- Botão para Aceitar (Status 1 -> 2) -->
+                <Button
+                    android:id="@+id/btnAceitar"
+                    style="@style/btncad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Aceitar Solicitação"
+                    android:backgroundTint="#4CAF50"
+                    android:visibility="gone" />
+
+                <!-- Botão para Concluir (Status 2 -> 3) -->
+                <Button
+                    android:id="@+id/btnConcluir"
+                    style="@style/btncad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Concluir Serviço"
+                    android:backgroundTint="#2196F3"
+                    android:visibility="gone" />
+
+                <!-- Botão para Cancelar (Status -> 4) -->
+                <Button
+                    android:id="@+id/btnCancelar"
+                    style="@style/btncad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:text="Cancelar Serviço"
+                    android:backgroundTint="#F44336"
+                    android:visibility="gone" />
+            </LinearLayout>
 
         </LinearLayout>
-
     </ScrollView>
-
 </LinearLayout>

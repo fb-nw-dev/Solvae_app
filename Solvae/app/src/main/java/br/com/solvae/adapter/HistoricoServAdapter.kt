@@ -1,18 +1,17 @@
 package br.com.solvae.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import br.com.solvae.adapter.MenuServicesAdapter.MenuServicesViewHolder
 import br.com.solvae.databinding.ItemHistoricoBinding
-import br.com.solvae.databinding.ItemServicoBinding
 import br.com.solvae.model.Servico
 
 class HistoricoServAdapter: ListAdapter<Servico , HistoricoServAdapter.HistoricoViewHolder>(DIFF) {
 
-   var itemClickHistorico: ((posicao: Int)-> Unit)? = null
+    var itemClickHistorico: ((posicao: Int)-> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoricoViewHolder {
         return HistoricoViewHolder.create(parent, itemClickHistorico)
@@ -26,17 +25,15 @@ class HistoricoServAdapter: ListAdapter<Servico , HistoricoServAdapter.Historico
         }
     }
 
-
     companion object {
         private val DIFF = object: DiffUtil.ItemCallback<Servico>() {
             override fun areItemsTheSame(oldItem: Servico, newItem: Servico): Boolean {
-                return oldItem == newItem
+                return oldItem.idServ == newItem.idServ
             }
 
             override fun areContentsTheSame(oldItem: Servico, newItem: Servico): Boolean {
                 return oldItem == newItem
             }
-
         }
     }
 
@@ -48,7 +45,35 @@ class HistoricoServAdapter: ListAdapter<Servico , HistoricoServAdapter.Historico
         fun bind(historico: Servico , posicao: Int){
             itemHistoricoBinding.tvTipoServ.text = historico.tipoServ
             itemHistoricoBinding.tVEspec.text = historico.Espec
-            itemHistoricoBinding.tvStatusServ.text = historico.statusServ
+
+            // Tradução visual do número do status para o seu campo @+id/tvStatusServ
+            when (historico.statusServ) {
+                "0" -> {
+                    itemHistoricoBinding.tvStatusServ.text = "Aberto"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#2196F3")) // Azul
+                }
+                "1" -> {
+                    itemHistoricoBinding.tvStatusServ.text = "Solicitado"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#FF9800")) // Laranja
+                }
+                "2" -> {
+                    itemHistoricoBinding.tvStatusServ.text = "Confirmado"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#4CAF50")) // Verde
+                }
+                "3" -> {
+                    itemHistoricoBinding.tvStatusServ.text = "Finalizado"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#757575")) // Cinza
+                }
+                "4" -> {
+                    itemHistoricoBinding.tvStatusServ.text = "Cancelado"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.RED) // Vermelho
+                }
+                else -> {
+                    itemHistoricoBinding.tvStatusServ.text = historico.statusServ
+                }
+            }
+
+            // Clique utilizando o ID correto que você definiu
             itemHistoricoBinding.lldetalhes2.setOnClickListener {
                 itemClickHistorico?.invoke(posicao)
             }
@@ -66,5 +91,4 @@ class HistoricoServAdapter: ListAdapter<Servico , HistoricoServAdapter.Historico
             }
         }
     }
-
 }

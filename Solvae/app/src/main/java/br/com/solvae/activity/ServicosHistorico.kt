@@ -23,27 +23,22 @@ class ServicosHistorico : AppCompatActivity() {
     }
 
     private var listaOriginal: List<Servico> = emptyList()
-
-    // Instancia o seu adapter real
     private val historicoAdapter by lazy { HistoricoServAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        // Configura o seu adapter no RecyclerView da tela
         binding.rvHistorico.adapter = historicoAdapter
 
-        // CLIQUE NO ITEM: Abre os detalhes exatamente como no Menu Services
         historicoAdapter.itemClickHistorico = { posicao ->
             val servicoClicado = historicoAdapter.currentList[posicao]
-
             val intent = Intent(this@ServicosHistorico, DetalhesServico::class.java)
-            intent.putExtra("servico", servicoClicado)
+            intent.putExtra("SERVICO_SELECIONADO", servicoClicado)
             startActivity(intent)
         }
 
-        // 1. Controle do Botão de Pesquisa (Abre/fecha barra)
+        // 1. Controle do Botão de Pesquisa
         binding.searchButton.setOnClickListener {
             if (binding.editSearch.visibility == View.GONE) {
                 binding.editSearch.visibility = View.VISIBLE
@@ -51,11 +46,10 @@ class ServicosHistorico : AppCompatActivity() {
             } else {
                 binding.editSearch.text.clear()
                 binding.editSearch.visibility = View.GONE
-                filtrarLista("") // Restaura a lista original
+                filtrarLista("")
             }
         }
 
-        // 2. Ouvinte de digitação na barra de pesquisa (Filtra em tempo real)
         binding.editSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -64,7 +58,7 @@ class ServicosHistorico : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // 3. Recuperar ID do Usuário Logado das SharedPreferences
+        // 3. Recuperar ID do Usuário
         val sharedPreferences = getSharedPreferences("SOLVAE_PREFS", Context.MODE_PRIVATE)
         val idUsuarioLogado = sharedPreferences.getInt("ID_USUARIO", -1)
 
@@ -84,14 +78,10 @@ class ServicosHistorico : AppCompatActivity() {
             override fun onResponse(call: Call<List<Servico>>, response: Response<List<Servico>>) {
                 if (response.isSuccessful) {
                     listaOriginal = response.body() ?: emptyList()
-
                     if (listaOriginal.isEmpty()) {
-                        Toast.makeText(this@ServicosHistorico, "Você ainda não cadastrou nenhum serviço.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@ServicosHistorico, "Você ainda não cadastrou nenhum serviço.", Toast.LENGTH_SHORT).show()
                     }
-
-                    // Envia a lista do servidor para o seu ListAdapter
                     historicoAdapter.submitList(listaOriginal)
-
                 } else {
                     Toast.makeText(this@ServicosHistorico, "Erro ao carregar histórico: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
@@ -103,36 +93,35 @@ class ServicosHistorico : AppCompatActivity() {
         })
     }
 
-    // Função de filtro em tempo real que joga para o seu ListAdapter
     private fun filtrarLista(texto: String) {
         val textoMinusculo = texto.lowercase().trim()
-
         val listaFiltrada = listaOriginal.filter { servico ->
             servico.tipoServ?.lowercase()?.contains(textoMinusculo) == true ||
                     servico.Espec?.lowercase()?.contains(textoMinusculo) == true
         }
-
         historicoAdapter.submitList(listaFiltrada)
     }
 
     private fun configurarMenuInferior() {
+        // Menu Superior (MenuBar)
+        binding.menubar.setOnClickListener {
+            startActivity(Intent(this, MenuBar::class.java))
+            // Opcional: finish() aqui se quiser fechar o histórico ao abrir o menu
+        }
+
+        // Botões do Menu Inferior
         binding.btnServicos.setOnClickListener {
-            finish() // Volta para a tela geral de serviços
+            startActivity(Intent(this, MenuServices::class.java))
+            finish()
         }
 
         binding.btnAdicionar.setOnClickListener {
-            // Caso queira que abra a tela de cadastro de novos serviços no futuro:
             startActivity(Intent(this, AdcServ::class.java))
             finish()
         }
 
         binding.btnContratos.setOnClickListener {
             Toast.makeText(this, "Você já está na tela de histórico!", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.menubar.setOnClickListener {
-            Toast.makeText(this, "Menu lateral", Toast.LENGTH_SHORT).show()
-            finish()
         }
     }
 }

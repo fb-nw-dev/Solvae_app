@@ -69,33 +69,83 @@
                 android:id="@+id/tvPerfilDocumento"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="CPF/CNPJ: 000.000.000-00"
+                android:text="CPF/CNPJ:"
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp"/>
-
             <TextView
                 android:id="@+id/tvPerfilTelefone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Telefone: (00) 00000-0000"
+                android:text="Telefone:"
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp"/>
-
+            <TextView
+                android:id="@+id/tvPerfilRua"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rua:"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
+            <TextView android:id="@+id/tvPerfilBairro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bairro:"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
             <TextView
                 android:id="@+id/tvPerfilCidade"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cidade: Sua Cidade"
+                android:text="Cidade:"
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp"/>
-
             <TextView
                 android:id="@+id/tvPerfilCep"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="CEP: 00000-000"
+                android:text="CEP:"
                 android:textSize="16sp"
-                android:layout_marginBottom="32dp"/>
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/tvPerfilDataNasc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Data Nasc:"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tvPerfilSexo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sexo:"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvPerfilRazaoSocial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Razão Social:"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tvPerfilCnae"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CNAE:" android:textSize="16sp"
+                android:layout_marginBottom="12dp" android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tvPerfilUf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="UF:"
+                android:textSize="16sp"
+                android:layout_marginBottom="32dp"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/btnIrParaEditar"

@@ -2,6 +2,7 @@
 package br.com.solvae.model
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Login(
 
@@ -9,4 +10,4 @@ data class Login(
     @SerializedName("Email") val email : String ,
     @SerializedName("Senha_Usuario") val senha : String ,
     @SerializedName("Tipo_Usuario") val tipoUsuario : String
-    )
+    ): Serializable

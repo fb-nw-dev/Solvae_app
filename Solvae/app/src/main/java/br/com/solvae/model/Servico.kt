@@ -1,3 +1,4 @@
+
 package br.com.solvae.model
 
 import com.google.gson.annotations.SerializedName
@@ -14,9 +15,10 @@ data class Servico(
     // Quem criou (um deles vai preenchido, o outro null)
     @SerializedName("id_PF") val idPF: Int? = null,
     @SerializedName("idEmpresa") val idEmpresa: Int? = null,
+    @SerializedName("Local") val local: Int? = null,
 
     // O seu novo campo de texto para o solicitante!
-    @SerializedName("solicitante") val solicitante: String? = null,
+    @SerializedName("Solicitante") val solicitante: String? = null,
 
     @SerializedName("quantidadeServico") val qtServ: Int? = null
 ) : Serializable
