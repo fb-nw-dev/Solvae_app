@@ -168,8 +168,12 @@ class ClienteCad : AppCompatActivity() {
             else -> "Não Informado"
         }
 
-        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || cpfComMascara.isEmpty()) {
-            Toast.makeText(this, "Por favor, preencha os campos obrigatórios!", Toast.LENGTH_SHORT).show()
+        // Validação expandida para garantir consistência de dados antes do envio
+        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || cpfPuro.isEmpty() ||
+            dataNasc.isEmpty() || telefonePuro.isEmpty() || cepPuro.isEmpty() ||
+            rua.isEmpty() || bairro.isEmpty() || cidade.isEmpty() || numeroStr.isEmpty()) {
+
+            Toast.makeText(this, "Por favor, preencha todos os campos obrigatórios!", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -181,15 +185,21 @@ class ClienteCad : AppCompatActivity() {
             return
         }
 
+        // Desativa o botão para bloquear clicks duplos/múltiplos na requisição assíncrona
+        binding.btnCadastrar.isEnabled = false
+
         val dadosLogin = Login(
             email = email,
             senha = senha,
             tipoUsuario = tipoUsuario
         )
 
+        // Formata a data de dd/MM/yyyy para yyyy-MM-dd antes de mandar pro backend
+        val dataNascFormatada = formatarDataParaAPI(dataNasc)
+
         val novaPf = PessoaFisica(
             nome = nome,
-            dataNasc = dataNasc,
+            dataNasc = dataNascFormatada, // <-- Aqui agora vai o formato correto!
             cep = cepPuro,          // Salva apenas números
             rua = rua,
             bairro = bairro,
@@ -207,13 +217,22 @@ class ClienteCad : AppCompatActivity() {
             override fun onResponse(call: Call<PessoaFisica>, response: Response<PessoaFisica>) {
                 if (response.isSuccessful) {
                     Toast.makeText(this@ClienteCad, "Cadastro de ${response.body()?.nome} realizado!", Toast.LENGTH_SHORT).show()
+
+                    // CORREÇÃO: Direciona para a tela de Login e limpa o histórico de telas
+                    val intent = android.content.Intent(this@ClienteCad, LoginActv::class.java)
+                    intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
                     finish()
                 } else {
+                    binding.btnCadastrar.isEnabled = true
+                    android.util.Log.e("ERRO_API", "Código: ${response.code()} | Detalhe: ${response.errorBody()?.string()}")
                     Toast.makeText(this@ClienteCad, "Erro ao cadastrar: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<PessoaFisica>, t: Throwable) {
+                binding.btnCadastrar.isEnabled = true
+                android.util.Log.e("ERRO_CONEXAO", "Falha na requisição", t)
                 Toast.makeText(this@ClienteCad, "Sem conexão com o servidor.", Toast.LENGTH_SHORT).show()
             }
         })
@@ -224,45 +243,65 @@ class ClienteCad : AppCompatActivity() {
     // =========================================================================
 
     /**
-     * CORREÇÃO: Alinhado a tipagem do parâmetro para receber um TextInputEditText,
-     * evitando conflitos de compilação com os listeners criados via ViewBinding.
+     * Converte a data do formato BR (dd/MM/yyyy) para o formato internacional (yyyy-MM-dd)
+     */
+    private fun formatarDataParaAPI(dataBr: String): String {
+        return try {
+            val formatoEntrada = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val formatoSaida = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val data = formatoEntrada.parse(dataBr)
+            formatoSaida.format(data!!)
+        } catch (e: Exception) {
+            dataBr // Caso falhe, envia o original para não quebrar o fluxo
+        }
+    }
+
+    /**
+     * Gerenciador dinâmico de máscaras rodando dentro do loop afterTextChanged.
+     * Corrigido para evitar loops de concorrência ou espelhamentos involuntários de dados entre os inputs.
      */
     private fun criarMascara(editText: com.google.android.material.textfield.TextInputEditText, mask: String): TextWatcher {
         return object : TextWatcher {
-            var isUpdating: Boolean = false
-            var oldText = ""
+            private var isUpdating = false
+            private var oldString = ""
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val str = s.toString().replace(Regex("[^0-9]"), "")
-                var textComMascara = ""
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-                if (isUpdating) {
-                    oldText = str
-                    isUpdating = false
-                    return
-                }
+            override fun afterTextChanged(s: Editable?) {
+                val strPura = s.toString().replace(Regex("[^0-9]"), "")
 
+                // Corta travas cíclicas e evita que eventos paralelos alterem a referência atual do EditText
+                if (isUpdating || strPura == oldString) return
+
+                isUpdating = true
+                oldString = strPura
+
+                val mascara = StringBuilder()
                 var i = 0
                 for (m in mask.toCharArray()) {
-                    if (m != '#' && str.length > oldText.length) {
-                        textComMascara += m
+                    if (m != '#') {
+                        if (i < strPura.length) {
+                            mascara.append(m)
+                        }
                         continue
                     }
                     try {
-                        textComMascara += str[i]
+                        mascara.append(strPura[i])
+                        i++
                     } catch (e: Exception) {
                         break
                     }
-                    i++
                 }
 
-                isUpdating = true
-                editText.setText(textComMascara)
-                editText.setSelection(textComMascara.length)
-            }
+                // Certifica que apenas o componente focalizado e modificado receba o novo texto formatado
+                if (s.toString() != mascara.toString()) {
+                    editText.setText(mascara.toString())
+                    editText.setSelection(mascara.length)
+                }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun afterTextChanged(s: Editable?) {}
+                isUpdating = false
+            }
         }
     }
 

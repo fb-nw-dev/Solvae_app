@@ -9,7 +9,7 @@
     <string name="topCad">Preencha os campos de cadastro para prossegir!</string>
     <string name="btnlog">LOGIN</string>
     <string name="btn_cadastrar">CADASTRAR</string>
-    <string name="btn_cadEmpresa">clicle aqui caso tenha um CNPJ para se cadastrar como empresa</string>
+    <string name="btn_cadEmpresa">clique aqui caso tenha um CNPJ para se cadastrar como empresa</string>
     <string name="btn_cadPF">clique aqui para se cadastrar como pessoa fisica</string>
 
 

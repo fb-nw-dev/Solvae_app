@@ -64,7 +64,7 @@ class LoginActv : AppCompatActivity() {
                         }
 
                         // Direciona para a tela de Perfil
-                        startActivity(Intent(this@LoginActv, PerfilUsuario::class.java))
+                        startActivity(Intent(this@LoginActv, MenuServices::class.java))
                         finish()
                     } else {
                         Toast.makeText(this@LoginActv, "Credenciais inválidas", Toast.LENGTH_SHORT).show()

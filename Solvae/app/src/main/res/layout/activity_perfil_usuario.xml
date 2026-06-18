@@ -20,9 +20,10 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_gravity="center"
-            android:src="@drawable/menu"
+            android:src="@drawable/arrow_left"
             android:backgroundTint="@null"
-            android:background="@color/ocean" />
+            android:background="@color/ocean"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -71,49 +72,60 @@
                 android:layout_height="wrap_content"
                 android:text="CPF/CNPJ:"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/black"
+                />
             <TextView
                 android:id="@+id/tvPerfilTelefone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Telefone:"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/black"
+                />
             <TextView
                 android:id="@+id/tvPerfilRua"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Rua:"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-            <TextView android:id="@+id/tvPerfilBairro"
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/black"/>
+
+             <TextView
+                android:id="@+id/tvPerfilBairro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Bairro:"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="12dp"
+                 android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/tvPerfilCidade"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Cidade:"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/tvPerfilCep"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="CEP:"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="12dp"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/tvPerfilDataNasc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Data Nasc:"
+                android:text="Data de Nascimento:"
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp"
+                android:textColor="@color/black"
                 android:visibility="gone"/>
             <TextView
                 android:id="@+id/tvPerfilSexo"
@@ -122,7 +134,8 @@
                 android:text="Sexo:"
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/tvPerfilRazaoSocial"
@@ -131,13 +144,17 @@
                 android:text="Razão Social:"
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/tvPerfilCnae"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="CNAE:" android:textSize="16sp"
-                android:layout_marginBottom="12dp" android:visibility="gone"/>
+                android:text="CNAE:"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/tvPerfilUf"
                 android:layout_width="match_parent"
@@ -145,7 +162,8 @@
                 android:text="UF:"
                 android:textSize="16sp"
                 android:layout_marginBottom="32dp"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:textColor="@color/black"/>
 
             <Button
                 android:id="@+id/btnIrParaEditar"

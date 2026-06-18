@@ -40,10 +40,26 @@ class AdcServ : AppCompatActivity() {
     }
 
     /**
-     * Preenche o AutoCompleteTextView (Dropdown) com categorias de exemplo.
+     * Preenche o AutoCompleteTextView (Dropdown) com as categorias reais do seu app.
      */
     private fun configurarDropdownTipoServico() {
-        val tiposDeServico = arrayOf("Manutenção", "Limpeza", "Consultoria", "Design", "Programação", "Outros")
+        // Nova lista com os serviços que você especificou:
+        val tiposDeServico = arrayOf(
+            "Informática e TI",
+            "Elétrica",
+            "Encanamento e Hidráulica",
+            "Construção Civil e Reformas",
+            "Estética e Beleza",
+            "Mecânica Automotiva",
+            "Gastronomia e Eventos",
+            "Educação e Aulas",
+            "Design e Multimídia",
+            "Serviços Domésticos e Reformas Gerais",
+            "Saúde e Bem-Estar",
+            "Logística e Transporte"
+        )
+
+        // O próprio Android se encarrega de desenhar a lista com essa linha aqui:
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tiposDeServico)
         binding.actvTipoServico.setAdapter(adapter)
     }

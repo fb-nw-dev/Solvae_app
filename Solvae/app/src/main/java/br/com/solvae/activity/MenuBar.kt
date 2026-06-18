@@ -15,8 +15,15 @@ class MenuBar : AppCompatActivity() {
         setContentView(binding.root)
 
         // 1. Botão Voltar
+        // ... dentro do onCreate da sua MenuBar.kt ...
+
         binding.voltar.setOnClickListener {
-            finish()
+            val intent = Intent(this, MenuServices::class.java)
+            // FLAG_ACTIVITY_CLEAR_TOP faz o app voltar para a MenuServices que já estava aberta,
+            // em vez de criar uma nova cópia dela na pilha
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
+            finish() // Fecha a MenuBar para não acumular memória
         }
 
         // 2. Botão Perfil

@@ -14,6 +14,7 @@ import br.com.solvae.model.Login
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -50,6 +51,9 @@ class EmpresaCad : AppCompatActivity() {
         binding.tietTelefone.addTextChangedListener(criarMascara(binding.tietTelefone, "(##) #####-####"))
         binding.tietCep.addTextChangedListener(criarMascara(binding.tietCep, "#####-###"))
         binding.tietDataAbertura.addTextChangedListener(criarMascara(binding.tietDataAbertura, "##/##/####"))
+
+        // Aplica a nova máscara monetária customizada no campo de Capital Social
+        binding.tietCapitalSocial.addTextChangedListener(criarMascaraMonetaria(binding.tietCapitalSocial))
     }
 
     /**
@@ -61,9 +65,7 @@ class EmpresaCad : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                // Remove a máscara hífen para fazer a contagem dos 8 números puros exigidos pelo ViaCEP
                 val cep = s.toString().replace(Regex("[^0-9]"), "").trim()
-
                 if (cep.length == 8) {
                     buscarEnderecoPorCep(cep)
                 }
@@ -77,7 +79,6 @@ class EmpresaCad : AppCompatActivity() {
     private fun buscarEnderecoPorCep(cep: String) {
         val api = RetrofitClient.instancia
 
-        // CORREÇÃO: Passando a URL completa dinamicamente para respeitar a anotação @Url da interface
         api.buscarCep("https://viacep.com.br/ws/$cep/json/").enqueue(object : Callback<CepResponse> {
             override fun onResponse(call: Call<CepResponse>, response: Response<CepResponse>) {
                 if (response.isSuccessful && response.body() != null) {
@@ -88,15 +89,12 @@ class EmpresaCad : AppCompatActivity() {
                         return
                     }
 
-                    // Preenche os campos automaticamente com os dados retornados
                     binding.tietRua.setText(dadosEndereco.logradouro)
                     binding.tietBairro.setText(dadosEndereco.bairro)
                     binding.tietCidade.setText(dadosEndereco.localidade)
                     binding.tietUf.setText(dadosEndereco.uf)
 
-                    // Move o foco para o campo de número da empresa
                     binding.tietNumero.requestFocus()
-
                 } else {
                     Toast.makeText(this@EmpresaCad, "Erro ao buscar CEP.", Toast.LENGTH_SHORT).show()
                 }
@@ -148,7 +146,6 @@ class EmpresaCad : AppCompatActivity() {
         val email = binding.tietEmail.text.toString().trim()
         val senha = binding.tietSenha.text.toString().trim()
 
-        // Mantemos os valores puros sem formatação visual para salvar de forma limpa no Banco de Dados
         val cnpjComMascara = binding.tietCnpj.text.toString().trim()
         val cnpjPuro = cnpjComMascara.replace(Regex("[^0-9]"), "")
 
@@ -162,15 +159,25 @@ class EmpresaCad : AppCompatActivity() {
         val rua = binding.tietRua.text.toString().trim()
         val numStr = binding.tietNumero.text.toString().trim()
         val cepPuro = binding.tietCep.text.toString().replace(Regex("[^0-9]"), "").trim()
-        val dataAbertura = binding.tietDataAbertura.text.toString().trim()
-        val capitalStr = binding.tietCapitalSocial.text.toString().trim()
 
-        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || cnpjComMascara.isEmpty()) {
+        // CORREÇÃO DATA: Converte dd/MM/yyyy para yyyy-MM-dd antes de salvar/enviar à API
+        val dataAbertura = binding.tietDataAbertura.text.toString().trim()
+        val dataAberturaFormatada = formatarDataParaAPI(dataAbertura)
+
+        // TRATAMENTO DA MÁSCARA MONETÁRIA:
+        val capitalStr = binding.tietCapitalSocial.text.toString().trim()
+        val capitalLimpo = capitalStr.replace(Regex("[^0-9]"), "")
+        val capitalSocialDouble = if (capitalLimpo.isNotEmpty()) {
+            capitalLimpo.toDouble() / 100
+        } else {
+            0.0
+        }
+
+        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || cnpjPuro.isEmpty()) {
             Toast.makeText(this, "Preencha os campos obrigatórios!", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // EXECUÇÃO DO VALIDADOR MATEMÁTICO DE CNPJ
         if (!validarCNPJ(cnpjPuro)) {
             binding.tietCnpj.error = "CNPJ inválido!"
             binding.tietCnpj.requestFocus()
@@ -188,18 +195,18 @@ class EmpresaCad : AppCompatActivity() {
             nome = nome,
             rua = rua,
             cnae = cnaeStr.toIntOrNull() ?: 0,
-            cnpj = cnpjPuro, // Envia limpo para a API
+            cnpj = cnpjPuro,
             razaoSocial = razaoSocial,
-            dataAbertura = dataAbertura,
-            capitalSocial = capitalStr.toDoubleOrNull() ?: 0.0,
+            dataAbertura = dataAberturaFormatada, // Enviando data corrigida (yyyy-MM-dd)
+            capitalSocial = capitalSocialDouble,
             tipoEmpresa = tipoEmpresa,
             statusEmp = 1,
-            telefone = telefonePuro, // Envia limpo para a API
+            telefone = telefonePuro,
             numero = numStr.toIntOrNull(),
             bairro = bairro,
             cidade = city,
             uf = uf,
-            cep = cepPuro, // Envia limpo para a API
+            cep = cepPuro,
             usuarioLoginId = 0,
             login = dadosLogin
         )
@@ -209,6 +216,11 @@ class EmpresaCad : AppCompatActivity() {
             override fun onResponse(call: Call<Empresa>, response: Response<Empresa>) {
                 if (response.isSuccessful) {
                     Toast.makeText(this@EmpresaCad, "Empresa ${response.body()?.nome} cadastrada!", Toast.LENGTH_SHORT).show()
+
+                    // CORREÇÃO: Direciona para a tela de Login e limpa o histórico de telas
+                    val intent = android.content.Intent(this@EmpresaCad, LoginActv::class.java)
+                    intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
                     finish()
                 } else {
                     Toast.makeText(this@EmpresaCad, "Erro ao cadastrar: ${response.code()}", Toast.LENGTH_SHORT).show()
@@ -222,49 +234,104 @@ class EmpresaCad : AppCompatActivity() {
     }
 
     // =========================================================================
-    // MOTORES AUXILIARES: Gerenciador de Máscaras e Validador Lógico do CNPJ
+    // MOTORES AUXILIARES: Gerenciadores de Máscaras e Validador Lógico de CNPJ
     // =========================================================================
 
     /**
-     * CORREÇÃO: Alinhado a tipagem do parâmetro para receber um TextInputEditText,
-     * evitando conflitos de compilação com os listeners criados via ViewBinding.
+     * Converte a data do formato BR (dd/MM/yyyy) para o formato internacional (yyyy-MM-dd)
+     */
+    private fun formatarDataParaAPI(dataBr: String): String {
+        return try {
+            val formatoEntrada = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val formatoSaida = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val data = formatoEntrada.parse(dataBr)
+            formatoSaida.format(data!!)
+        } catch (e: Exception) {
+            dataBr
+        }
+    }
+
+    /**
+     * Cria um formatador dinâmico em tempo real para moeda corrente (R$ 1.234,56)
+     */
+    private fun criarMascaraMonetaria(editText: com.google.android.material.textfield.TextInputEditText): TextWatcher {
+        return object : TextWatcher {
+            private var current = ""
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s.toString() != current) {
+                    editText.removeTextChangedListener(this)
+
+                    val cleanString = s.toString().replace(Regex("[^0-9]"), "")
+
+                    if (cleanString.isNotEmpty()) {
+                        try {
+                            val parsed = cleanString.toDouble()
+                            val formatted = NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(parsed / 100)
+
+                            current = formatted
+                            editText.setText(formatted)
+                            editText.setSelection(formatted.length)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    } else {
+                        current = ""
+                        editText.setText("")
+                    }
+
+                    editText.addTextChangedListener(this)
+                }
+            }
+        }
+    }
+
+    /**
+     * Gerenciador padrão de masks fixas estruturado de forma segura no afterTextChanged
      */
     private fun criarMascara(editText: com.google.android.material.textfield.TextInputEditText, mask: String): TextWatcher {
         return object : TextWatcher {
-            var isUpdating: Boolean = false
-            var oldText = ""
+            private var isUpdating = false
+            private var oldString = ""
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val str = s.toString().replace(Regex("[^0-9]"), "")
-                var textComMascara = ""
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-                if (isUpdating) {
-                    oldText = str
-                    isUpdating = false
-                    return
-                }
+            override fun afterTextChanged(s: Editable?) {
+                val strPura = s.toString().replace(Regex("[^0-9]"), "")
 
+                if (isUpdating || strPura == oldString) return
+
+                isUpdating = true
+                oldString = strPura
+
+                val mascara = StringBuilder()
                 var i = 0
                 for (m in mask.toCharArray()) {
-                    if (m != '#' && str.length > oldText.length) {
-                        textComMascara += m
+                    if (m != '#') {
+                        if (i < strPura.length) {
+                            mascara.append(m)
+                        }
                         continue
                     }
                     try {
-                        textComMascara += str[i]
+                        mascara.append(strPura[i])
+                        i++
                     } catch (e: Exception) {
                         break
                     }
-                    i++
                 }
 
-                isUpdating = true
-                editText.setText(textComMascara)
-                editText.setSelection(textComMascara.length)
-            }
+                if (s.toString() != mascara.toString()) {
+                    editText.setText(mascara.toString())
+                    editText.setSelection(mascara.length)
+                }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun afterTextChanged(s: Editable?) {}
+                isUpdating = false
+            }
         }
     }
 
@@ -278,7 +345,6 @@ class EmpresaCad : AppCompatActivity() {
             val pesoDigito1 = intArrayOf(5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2)
             val pesoDigito2 = intArrayOf(6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2)
 
-            // Cálculo do Primeiro Dígito Verificador
             var soma = 0
             for (i in 0..11) {
                 soma += cnpj[i].toString().toInt() * pesoDigito1[i]
@@ -286,7 +352,6 @@ class EmpresaCad : AppCompatActivity() {
             var resto = soma % 11
             val digito1 = if (resto < 2) 0 else 11 - resto
 
-            // Cálculo do Segundo Dígito Verificador
             soma = 0
             for (i in 0..12) {
                 soma += cnpj[i].toString().toInt() * pesoDigito2[i]

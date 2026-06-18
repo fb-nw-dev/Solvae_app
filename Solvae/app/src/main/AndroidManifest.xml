@@ -8,11 +8,21 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/solvae_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/solvae_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Solvae">
+
+        <activity
+            android:name=".activity.LoginActv"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".activity.AdcServ"
             android:exported="false" />
@@ -22,15 +32,6 @@
         <activity
             android:name=".activity.ServicosHistorico"
             android:exported="false" />
-        <activity
-            android:name=".activity.LoginActv"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".activity.DetalhesServico"
             android:exported="false"
@@ -47,6 +48,20 @@
             android:name=".activity.EditarPerfilPJ"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activity.MenuServices"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SelectCad"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ClienteCad"
+            android:exported="false" />
+        <activity
+            android:name=".activity.EmpresaCad"
+            android:exported="false" />
+
     </application>
 
 </manifest>

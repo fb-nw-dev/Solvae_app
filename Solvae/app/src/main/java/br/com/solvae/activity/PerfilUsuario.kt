@@ -13,6 +13,8 @@ import br.com.solvae.model.PessoaFisica
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.NumberFormat
+import java.util.Locale
 
 class PerfilUsuario : AppCompatActivity() {
 
@@ -28,8 +30,16 @@ class PerfilUsuario : AppCompatActivity() {
         idUsuario = prefs.getInt("ID_USUARIO", -1)
         tipoUsuario = prefs.getString("TIPO_USUARIO", null)
 
+        // FEEDBACK DE DIAGNÓSTICO: Se os dados sumirem, esse Toast vai te dizer se o ID veio zerado/vazio do Login
+        if (idUsuario == -1 || tipoUsuario.isNullOrEmpty()) {
+            Toast.makeText(this, "Erro: Usuário não identificado no SharedPreferences.", Toast.LENGTH_LONG).show()
+        }
+
         binding.btnVoltarPerfil.setOnClickListener {
-            startActivity(Intent(this, MenuBar::class.java))
+            val intent = Intent(this, MenuBar::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
+            finish()
         }
 
         binding.btnIrParaEditar.setOnClickListener {
@@ -38,6 +48,8 @@ class PerfilUsuario : AppCompatActivity() {
             } else {
                 Intent(this, EditarPerfilPJ::class.java)
             }
+            // Passa o ID adiante para a tela de edição saber quem alterar
+            intent.putExtra("ID_USUARIO", idUsuario)
             startActivity(intent)
         }
     }
@@ -54,10 +66,12 @@ class PerfilUsuario : AppCompatActivity() {
             override fun onResponse(call: Call<PessoaFisica>, response: Response<PessoaFisica>) {
                 if (response.isSuccessful && response.body() != null) {
                     preencherPF(response.body()!!)
+                } else {
+                    Toast.makeText(this@PerfilUsuario, "PF não encontrada. Erro: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             }
             override fun onFailure(call: Call<PessoaFisica>, t: Throwable) {
-                Toast.makeText(this@PerfilUsuario, "Erro de conexão", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PerfilUsuario, "Falha na conexão com o servidor", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -67,10 +81,12 @@ class PerfilUsuario : AppCompatActivity() {
             override fun onResponse(call: Call<Empresa>, response: Response<Empresa>) {
                 if (response.isSuccessful && response.body() != null) {
                     preencherPJ(response.body()!!)
+                } else {
+                    Toast.makeText(this@PerfilUsuario, "Empresa não encontrada. Erro: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             }
             override fun onFailure(call: Call<Empresa>, t: Throwable) {
-                Toast.makeText(this@PerfilUsuario, "Erro de conexão", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@PerfilUsuario, "Falha na conexão com o servidor", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -104,6 +120,13 @@ class PerfilUsuario : AppCompatActivity() {
         binding.tvPerfilRazaoSocial.text = "Razão Social: ${emp.razaoSocial}"
         binding.tvPerfilCnae.text = "CNAE: ${emp.cnae}"
         binding.tvPerfilUf.text = "UF: ${emp.uf}"
+
+        // BÔNUS EXTRA: Formata o Capital Social recebido da API de volta para "R$ X.XXX,XX" na visualização
+        try {
+            val formatado = NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(emp.capitalSocial)
+            // Se você tiver um TextView para o capital social no XML, mude o ID abaixo para o correto:
+            // binding.tvPerfilCapitalSocial.text = "Capital Social: $formatado"
+        } catch (e: Exception) { e.printStackTrace() }
 
         binding.tvPerfilDataNasc.visibility = View.GONE
         binding.tvPerfilSexo.visibility = View.GONE
