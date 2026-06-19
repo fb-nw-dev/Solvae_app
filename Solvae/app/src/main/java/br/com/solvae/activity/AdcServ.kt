@@ -1,11 +1,11 @@
 package br.com.solvae.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.solvae.api.RetrofitClient
@@ -15,8 +15,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
 
 class AdcServ : AppCompatActivity() {
@@ -43,7 +41,6 @@ class AdcServ : AppCompatActivity() {
      * Preenche o AutoCompleteTextView (Dropdown) com as categorias reais do seu app.
      */
     private fun configurarDropdownTipoServico() {
-        // Nova lista com os serviços que você especificou:
         val tiposDeServico = arrayOf(
             "Informática e TI",
             "Elétrica",
@@ -59,7 +56,6 @@ class AdcServ : AppCompatActivity() {
             "Logística e Transporte"
         )
 
-        // O próprio Android se encarrega de desenhar a lista com essa linha aqui:
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tiposDeServico)
         binding.actvTipoServico.setAdapter(adapter)
     }
@@ -75,12 +71,10 @@ class AdcServ : AppCompatActivity() {
                 if (s.toString() != atual) {
                     binding.tietValor.removeTextChangedListener(this)
 
-                    // Remove tudo que não for número inteiro
                     val limpo = s.toString().replace(Regex("[^0-9]"), "")
 
                     if (limpo.isNotEmpty()) {
                         val parsed = limpo.toDouble()
-                        // Formata no padrão de moeda brasileira: R$ 0,00
                         val formatado = NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(parsed / 100)
 
                         atual = formatado
@@ -104,7 +98,6 @@ class AdcServ : AppCompatActivity() {
      * Centraliza as ações de clique para a MenuBar e o BottomMenu utilizando as suas classes reais
      */
     private fun configurarNavegacao() {
-
         // --- MENU BAR SUPERIOR ---
         binding.menubar.setOnClickListener {
             val intent = Intent(this, MenuBar::class.java)
@@ -112,20 +105,16 @@ class AdcServ : AppCompatActivity() {
         }
 
         // --- BOTTOM MENU INFERIOR ---
-
-        // Botão Serviços -> Abre MenuServices
         binding.btnServicos.setOnClickListener {
             val intent = Intent(this, MenuServices::class.java)
             startActivity(intent)
             finish()
         }
 
-        // Botão Adicionar -> Já estamos nela
         binding.btnAdicionar.setOnClickListener {
             // Nenhuma ação necessária
         }
 
-        // Botão Contratos -> Abre ServicosHistorico
         binding.btnContratos.setOnClickListener {
             val intent = Intent(this, ServicosHistorico::class.java)
             startActivity(intent)
@@ -139,34 +128,48 @@ class AdcServ : AppCompatActivity() {
     private fun executarCadastroServico() {
         val tipoServico = binding.actvTipoServico.text.toString().trim()
         val specialty = binding.tietEspecialidade.text.toString().trim()
-        val descricao = binding.tietDescricao.text.toString().trim()
         val valorFormatado = binding.tietValor.text.toString().trim()
+        val descricao = binding.tietDescricao.text.toString().trim()
 
         if (tipoServico.isEmpty() || specialty.isEmpty() || valorFormatado.isEmpty()) {
             Toast.makeText(this, "Por favor, preencha todos os campos obrigatórios!", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // CONVERSÃO MONETÁRIA: Como o seu Model pede String, limpamos "R$ 1.250,50" para "1250.50"
+        // CONVERSÃO MONETÁRIA PARA DOUBLE
         val valorLimpoStr = valorFormatado
-            .replace(Regex("[^0-9,]"), "") // Remove símbolos e espaços
-            .replace(",", ".")             // Ajusta para ponto decimal padrão americano/Kotlin
+            .replace(Regex("[^0-9,]"), "")
+            .replace(",", ".")
+        val valorDouble = valorLimpoStr.toDoubleOrNull() ?: 0.0
 
-        // Obtém a data atual formatada como "yyyy-MM-dd" requerido pelo modelo
-        val dataAtual = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
+        // CORRIGIDO: Recupera as preferências para injetar o dono correto do anúncio
+        val prefs = getSharedPreferences("SOLVAE_PREFS", Context.MODE_PRIVATE)
+        val idUsuarioLogado = prefs.getInt("ID_USUARIO", -1)
+        val tipoUsuario = prefs.getString("TIPO_USUARIO", "")
 
-        // 1. Instancia o objeto utilizando o mapeamento exato do seu Servico.kt
+        if (idUsuarioLogado == -1) {
+            Toast.makeText(this, "Erro de sessão. Faça login novamente.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Define dinamicamente se preenche idPF ou idEmpresa com base no tipo retornado no Login
+        val idPFEnviar = if (tipoUsuario.equals("PF", ignoreCase = true)) idUsuarioLogado else null
+        val idEmpresaEnviar = if (tipoUsuario.equals("Empresa", ignoreCase = true)) idUsuarioLogado else null
+
+        // Instancia o objeto associando os IDs recuperados para o histórico conseguir listar
         val novoServico = Servico(
             tipoServ = tipoServico,
             Espec = specialty,
-            valorServ = valorLimpoStr,
-            statusServ = "Ativo",
-            dtContratacao = dataAtual,
-            descricao = descricao
-            // Os outros campos opcionais já são preenchidos com null por padrão no Model
+            valorServ = valorDouble,
+            statusServ = 1,
+            dtContratacao = "2026-06-19",
+            local = null,
+            descricao = descricao,
+            idPF = idPFEnviar,
+            idEmpresa = idEmpresaEnviar
         )
 
-        // 2. Chamada real do Retrofit
+        // Chamada real do Retrofit
         val api = RetrofitClient.instancia
 
         api.criarServico(novoServico).enqueue(object : Callback<Servico> {
@@ -174,7 +177,7 @@ class AdcServ : AppCompatActivity() {
                 if (response.isSuccessful) {
                     Toast.makeText(this@AdcServ, "Serviço cadastrado com sucesso!", Toast.LENGTH_SHORT).show()
 
-                    // Limpa os campos da tela após o sucesso para novos cadastros
+                    // Limpa os campos da tela
                     binding.actvTipoServico.setText("")
                     binding.tietEspecialidade.setText("")
                     binding.tietValor.setText("")

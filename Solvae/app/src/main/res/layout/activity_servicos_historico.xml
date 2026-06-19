@@ -5,10 +5,10 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.ServicosHistorico"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/backG"
+    tools:context=".activity.ServicosHistorico">
 
-    <!-- CABEÇALHO (Fixo no topo) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,8 +23,7 @@
             android:layout_gravity="center"
             android:src="@drawable/menu"
             android:backgroundTint="@null"
-            android:background="@color/ocean"
-            />
+            android:background="@color/ocean" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -48,7 +47,6 @@
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
-
         </LinearLayout>
 
         <ImageButton
@@ -58,36 +56,19 @@
             android:layout_gravity="center"
             android:src="@drawable/search"
             android:backgroundTint="@null"
-            android:background="@color/ocean"
-            />
+            android:background="@color/ocean" />
     </LinearLayout>
 
-    <!-- CONTEÚDO CENTRAL (Rola se for grande, mas não empurra o menu) -->
-    <!-- O segredo está no layout_weight="1" e height="0dp" -->
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvHistorico"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_margin="16dp"
+        android:background="@drawable/container_componets"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_historico" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            >
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvHistorico"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/container_componets"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_historico"
-                />
-        </LinearLayout>
-    </ScrollView>
-
-    <!-- MENU INFERIOR (Fixo no rodapé) -->
     <LinearLayout
         android:id="@+id/botmenu"
         android:layout_width="match_parent"
@@ -97,7 +78,6 @@
         android:elevation="8dp"
         android:gravity="center_vertical">
 
-        <!-- Botão 1 -->
         <LinearLayout
             android:id="@+id/btn_servicos"
             android:layout_width="0dp"
@@ -110,17 +90,14 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/search"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Serviços"
-                android:textSize="10sp"
-                android:textColor="@color/white"/>
+                android:src="@drawable/scroll" /> <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Serviços"
+            android:textSize="10sp"
+            android:textColor="@color/white"/>
         </LinearLayout>
 
-        <!-- Botão 2 -->
         <LinearLayout
             android:id="@+id/btn_adicionar"
             android:layout_width="0dp"
@@ -133,8 +110,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/circlep"
-                />
+                android:src="@drawable/circlep" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -143,7 +119,6 @@
                 android:textColor="@color/white" />
         </LinearLayout>
 
-        <!-- Botão 3 -->
         <LinearLayout
             android:id="@+id/btn_contratos"
             android:layout_width="0dp"
@@ -156,8 +131,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/handshake_1_"
-                />
+                android:src="@drawable/handshake_1_" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -9,7 +9,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.PUT // Importação necessária para o método PUT
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Url
 
@@ -32,6 +32,10 @@ interface ApiService {
     fun cadastrarEmpresa(@Body novaEmpresa: Empresa): Call<Empresa>
 
     // --- ATUALIZAÇÃO (PUT) ---
+
+    // 🌟 ADICIONADO: Rota para atualizar um serviço existente (Evita a clonagem no banco de dados)
+    @PUT("servicos/{id}")
+    fun atualizarServico(@Path("id") id: Int, @Body servicoAtualizado: Servico): Call<Servico>
 
     // 5. Rota para atualizar uma Pessoa Física
     @PUT("usuarios/pf/{id}")

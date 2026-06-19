@@ -54,17 +54,15 @@ class DetalhesServico : AppCompatActivity() {
 
     private fun preencherDadosDoServico() {
         servicoSelecionado?.let { servico ->
-            // Exibe a descrição original criada pelo prestador (sem alterações)
             binding.tvDetalheTipo.text = servico.tipoServ
             binding.tvDetalheEspec.text = servico.Espec
             binding.tvDetalheDescricao.text = servico.descricao
 
-            valorUnitario = servico.valorServ.replace(",", ".").toDoubleOrNull() ?: 0.0
+            valorUnitario = servico.valorServ
             val formatadorMoeda = NumberFormat.getCurrencyInstance(Locale("pt", "BR"))
             binding.tvDetalheValor.text = "Valor Unitário: ${formatadorMoeda.format(valorUnitario)}"
             binding.tvValorTotalCalculado.text = "Valor Total: ${formatadorMoeda.format(valorUnitario)}"
 
-            // Conversão da data do banco (yyyy-MM-dd) para formato visual brasileiro (dd/MM/yyyy)
             val textoData = if (!servico.dtContratacao.isNullOrEmpty() && servico.dtContratacao != "0000-00-00") {
                 try {
                     val formatoOriginal = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -78,34 +76,25 @@ class DetalhesServico : AppCompatActivity() {
                 ""
             }
 
-            // =========================================================================
-            // EXIBIÇÃO DINÂMICA: Injeta os dados nos TextViews existentes do XML
-            // =========================================================================
             if (!servico.solicitante.isNullOrEmpty()) {
-                // Separa a String única de volta em Nome, Telefone e Endereço
                 val partes = servico.solicitante.split("||")
                 val nomeCliente = partes.getOrNull(0) ?: "Não informado"
                 val telClienteRaw = partes.getOrNull(1) ?: "Não informado"
                 val localCliente = partes.getOrNull(2) ?: "Não informado"
 
-                // Formatação da Máscara de Telefone dinamicamente na exibição
                 val telClienteFormatado = formatarTelefone(telClienteRaw)
 
-                // Altera os textos fixos para refletir que agora são dados do Cliente Contratante
                 binding.tvNomeAnunciante.text = "Cliente: $nomeCliente"
                 binding.tvContatoAnunciante.text = "Telefone: $telClienteFormatado\n$textoData"
                 binding.tvLocalizacaoAnunciante.text = "Endereço de Entrega: $localCliente"
 
-                // Como já foi solicitado, esconde os inputs para não permitirem edição
                 binding.tilQuantidadeServico.visibility = View.GONE
                 binding.tilLocalServico.visibility = View.GONE
             } else {
-                // Se o serviço está em aberto (Status 0), mostra dados genéricos do prestador
                 binding.tvNomeAnunciante.text = "Prestador ID: ${servico.idEmpresa ?: servico.idPF}"
                 binding.tvContatoAnunciante.text = "Contato liberado após a solicitação."
                 binding.tvLocalizacaoAnunciante.text = "Localização flexível conforme combinado."
 
-                // Mostra os campos de digitação para o cliente preencher
                 binding.tilQuantidadeServico.visibility = View.VISIBLE
                 binding.tilLocalServico.visibility = View.VISIBLE
             }
@@ -140,36 +129,41 @@ class DetalhesServico : AppCompatActivity() {
 
         if (!souODono) {
             when (status) {
-                "0" -> {
+                0 -> {
                     binding.btnSolicitar.visibility = View.VISIBLE
                     binding.btnSolicitar.text = "Solicitar Serviço"
-                    binding.btnSolicitar.setOnClickListener { alterarStatusServico("1") }
+                    binding.btnSolicitar.setOnClickListener { alterarStatusServico(1) }
                 }
-                "1", "2" -> {
+                1, 2 -> {
                     binding.btnCancelar.visibility = View.VISIBLE
                     binding.btnCancelar.text = "Cancelar Solicitação"
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico("4") }
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(4) }
                 }
             }
         } else {
             when (status) {
-                "1" -> {
+                0 -> {
+                    binding.btnCancelar.visibility = View.VISIBLE
+                    binding.btnCancelar.text = "Cancelar Anúncio"
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(4) }
+                }
+                1 -> {
                     binding.btnAceitar.visibility = View.VISIBLE
                     binding.btnCancelar.visibility = View.VISIBLE
                     binding.btnCancelar.text = "Recusar Solicitação"
 
-                    binding.btnAceitar.setOnClickListener { alterarStatusServico("2") }
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico("4") }
+                    binding.btnAceitar.setOnClickListener { alterarStatusServico(2) }
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(4) }
                 }
-                "2" -> {
+                2 -> {
                     binding.btnConcluir.visibility = View.VISIBLE
                     binding.btnCancelar.visibility = View.VISIBLE
                     binding.btnCancelar.text = "Cancelar Serviço"
 
-                    binding.btnConcluir.setOnClickListener { alterarStatusServico("3") }
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico("4") }
+                    binding.btnConcluir.setOnClickListener { alterarStatusServico(3) }
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(4) }
                 }
-                "3", "4" -> {
+                3, 4 -> {
                     binding.btnSolicitar.visibility = View.VISIBLE
                     binding.btnSolicitar.text = "Anunciar Novamente"
                     binding.btnSolicitar.setBackgroundColor(android.graphics.Color.parseColor("#FF9800"))
@@ -179,13 +173,13 @@ class DetalhesServico : AppCompatActivity() {
         }
     }
 
-    private fun alterarStatusServico(novoStatus: String) {
+    private fun alterarStatusServico(novoStatus: Int) {
         val servico = servicoSelecionado ?: return
         val localPrestacao = binding.tietLocalServico.text.toString().trim()
         val quantidadeStr = binding.tietQuantidadeServico.text.toString().trim()
         val quantidade = quantidadeStr.toIntOrNull() ?: 1
 
-        if (novoStatus == "1" && localPrestacao.isEmpty()) {
+        if (novoStatus == 1 && localPrestacao.isEmpty()) {
             Toast.makeText(this, "Por favor, informe o local da prestação!", Toast.LENGTH_SHORT).show()
             return
         }
@@ -194,19 +188,18 @@ class DetalhesServico : AppCompatActivity() {
         val nomeUser = prefs.getString("NOME_USUARIO", "Usuário Solvae")
         val telUser = prefs.getString("TELEFONE_USUARIO", "(00) 00000-0000")
 
-        val dadosSolicitante = if (novoStatus == "1") {
+        val dadosSolicitante = if (novoStatus == 1) {
             "$nomeUser||$telUser||$localPrestacao"
         } else {
             servico.solicitante
         }
 
-        val dataDoClique = if (novoStatus == "1" || novoStatus == "2") {
+        val dataDoClique = if (novoStatus == 1 || novoStatus == 2) {
             SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
         } else {
             servico.dtContratacao
         }
 
-        // CORREÇÃO: Alterado de quantity para quantidade para compilar perfeitamente
         val servicoAtualizado = servico.copy(
             statusServ = novoStatus,
             solicitante = dadosSolicitante,
@@ -215,7 +208,11 @@ class DetalhesServico : AppCompatActivity() {
         )
 
         val api = RetrofitClient.instancia
-        api.criarServico(servicoAtualizado).enqueue(object : Callback<Servico> {
+
+        // CORRIGIDO: Recupera o idServ com segurança e o passa na rota @PUT mapeada na ApiService
+        val idDoServico = servicoAtualizado.idServ ?: 0
+
+        api.atualizarServico(idDoServico, servicoAtualizado).enqueue(object : Callback<Servico> {
             override fun onResponse(call: Call<Servico>, response: Response<Servico>) {
                 if (response.isSuccessful) {
                     Toast.makeText(this@DetalhesServico, "Sucesso ao atualizar serviço!", Toast.LENGTH_SHORT).show()
@@ -225,7 +222,6 @@ class DetalhesServico : AppCompatActivity() {
                 }
             }
 
-            // CORREÇÃO: Ajustado o tipo genérico do Callback para Servico para compilar
             override fun onFailure(call: Call<Servico>, t: Throwable) {
                 Toast.makeText(this@DetalhesServico, "Erro de conexão com o servidor.", Toast.LENGTH_SHORT).show()
             }
@@ -237,9 +233,9 @@ class DetalhesServico : AppCompatActivity() {
 
         val novoServicoReanunciado = servico.copy(
             idServ = null,
-            statusServ = "0",
+            statusServ = 0,
             solicitante = null,
-            dtContratacao = "0000-00-00",
+            dtContratacao = "2026-06-19",
             qtServ = 1
         )
 
@@ -260,15 +256,12 @@ class DetalhesServico : AppCompatActivity() {
         })
     }
 
-    /**
-     * Função auxiliar que limpa o texto e aplica a máscara de celular (##) #####-####
-     */
     private fun formatarTelefone(telefone: String): String {
         val apenasNumeros = telefone.replace(Regex("[^0-9]"), "")
         return if (apenasNumeros.length == 11) {
             "(${apenasNumeros.substring(0, 2)}) ${apenasNumeros.substring(2, 7)}-${apenasNumeros.substring(7)}"
         } else {
-            telefone // Retorna o texto original caso já esteja formatado ou incompleto
+            telefone
         }
     }
 }

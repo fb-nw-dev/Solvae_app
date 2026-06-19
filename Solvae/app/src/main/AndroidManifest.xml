@@ -12,7 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/solvae_logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Solvae">
+        android:theme="@style/Theme.Solvae"
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".activity.LoginActv"

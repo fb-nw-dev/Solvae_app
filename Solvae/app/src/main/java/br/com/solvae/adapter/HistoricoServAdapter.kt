@@ -46,30 +46,35 @@ class HistoricoServAdapter: ListAdapter<Servico , HistoricoServAdapter.Historico
             itemHistoricoBinding.tvTipoServ.text = historico.tipoServ
             itemHistoricoBinding.tVEspec.text = historico.Espec
 
-            // Tradução visual do número do status para o seu campo @+id/tvStatusServ
+            // CORRIGIDO: Agora comparando com inteiros (Int) de 0 a 5 em vez de Strings
             when (historico.statusServ) {
-                "0" -> {
-                    itemHistoricoBinding.tvStatusServ.text = "Aberto"
-                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#2196F3")) // Azul
-                }
-                "1" -> {
-                    itemHistoricoBinding.tvStatusServ.text = "Solicitado"
-                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#FF9800")) // Laranja
-                }
-                "2" -> {
-                    itemHistoricoBinding.tvStatusServ.text = "Confirmado"
-                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#4CAF50")) // Verde
-                }
-                "3" -> {
-                    itemHistoricoBinding.tvStatusServ.text = "Finalizado"
-                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#757575")) // Cinza
-                }
-                "4" -> {
+                0 -> {
                     itemHistoricoBinding.tvStatusServ.text = "Cancelado"
                     itemHistoricoBinding.tvStatusServ.setTextColor(Color.RED) // Vermelho
                 }
+                1 -> {
+                    itemHistoricoBinding.tvStatusServ.text = "Aguardando Aprovação"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#FF9800")) // Laranja
+                }
+                2 -> {
+                    itemHistoricoBinding.tvStatusServ.text = "Em Andamento"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#2196F3")) // Azul
+                }
+                3 -> {
+                    itemHistoricoBinding.tvStatusServ.text = "Pendente de Peças"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#E91E63")) // Rosa/Alerta
+                }
+                4 -> {
+                    itemHistoricoBinding.tvStatusServ.text = "Concluído"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#4CAF50")) // Verde
+                }
+                5 -> {
+                    itemHistoricoBinding.tvStatusServ.text = "Faturado"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#757575")) // Cinza
+                }
                 else -> {
-                    itemHistoricoBinding.tvStatusServ.text = historico.statusServ
+                    itemHistoricoBinding.tvStatusServ.text = "Desconhecido"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.BLACK)
                 }
             }
 

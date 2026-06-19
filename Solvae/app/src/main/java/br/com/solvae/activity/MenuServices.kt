@@ -2,10 +2,12 @@ package br.com.solvae.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.solvae.adapter.MenuServicesAdapter
 import br.com.solvae.api.RetrofitClient
 import br.com.solvae.databinding.ActivityMenuServicesBinding
@@ -27,22 +29,17 @@ class MenuServices : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        // Configuração do Adapter
         menuServicesAdapter = MenuServicesAdapter()
+        binding.rvServico.layoutManager = LinearLayoutManager(this)
+        binding.rvServico.adapter = menuServicesAdapter
+
         menuServicesAdapter.itemClickServico = { posicao: Int ->
             val servicoSelecionado = menuServicesAdapter.currentList[posicao]
             val intent = Intent(this@MenuServices, DetalhesServico::class.java)
             intent.putExtra("SERVICO_SELECIONADO", servicoSelecionado)
             startActivity(intent)
         }
-        binding.rvServico.adapter = menuServicesAdapter
 
-        // ========================================================
-        // CONFIGURAÇÃO DOS BOTÕES DO TOPO (MENU E PESQUISA)
-        // ========================================================
-
-        // AQUI: Abrimos a MenuBar SEM o finish(), para que o usuário
-        // possa voltar para esta tela naturalmente.
         binding.menubar.setOnClickListener {
             val intent = Intent(this, MenuBar::class.java)
             startActivity(intent)
@@ -65,16 +62,12 @@ class MenuServices : AppCompatActivity() {
                 menuServicesAdapter.submitList(menuServicos)
             } else {
                 val listaFiltrada = menuServicos.filter { servico ->
-                    servico.tipoServ.contains(query, ignoreCase = true) ||
-                            servico.Espec.contains(query, ignoreCase = true)
+                    servico.tipoServ?.contains(query, ignoreCase = true) == true ||
+                            servico.Espec?.contains(query, ignoreCase = true) == true
                 }
                 menuServicesAdapter.submitList(listaFiltrada)
             }
         }
-
-        // ========================================================
-        // CONFIGURAÇÃO DOS BOTÕES DO MENU INFERIOR
-        // ========================================================
 
         binding.btnServicos.setOnClickListener {
             recuperarMenuServico()
@@ -106,8 +99,14 @@ class MenuServices : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val listaRetornada = response.body()
                     if (listaRetornada != null) {
-                        menuServicos = listaRetornada.filter { it.statusServ == "0" }
+                        // 🌟 CORRIGIDO: Agora exibe serviços com status 0 (anunciado) e status 1 (criado/em aberto)
+                        menuServicos = listaRetornada.filter { it.statusServ == 0 || it.statusServ == 1 }
+
                         menuServicesAdapter.submitList(menuServicos)
+
+                        if (menuServicos.isEmpty() && listaRetornada.isNotEmpty()) {
+                            Toast.makeText(this@MenuServices, "Nenhum serviço disponível no momento.", Toast.LENGTH_LONG).show()
+                        }
                     }
                 } else {
                     Toast.makeText(this@MenuServices, "Erro no servidor: ${response.code()}", Toast.LENGTH_SHORT).show()
@@ -115,7 +114,8 @@ class MenuServices : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<List<Servico>>, t: Throwable) {
-                Toast.makeText(this@MenuServices, "Não foi possível conectar ao servidor", Toast.LENGTH_SHORT).show()
+                Log.e("RETROFIT_ERRO", t.message.toString())
+                Toast.makeText(this@MenuServices, "Não foi possível conectar ao servidor.", Toast.LENGTH_SHORT).show()
             }
         })
     }

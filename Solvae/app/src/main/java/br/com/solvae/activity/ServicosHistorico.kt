@@ -79,7 +79,7 @@ class ServicosHistorico : AppCompatActivity() {
                 if (response.isSuccessful) {
                     listaOriginal = response.body() ?: emptyList()
                     if (listaOriginal.isEmpty()) {
-                        Toast.makeText(this@ServicosHistorico, "Você ainda não cadastrou nenhum serviço.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ServicosHistorico, "Nenhum serviço associado a esta conta.", Toast.LENGTH_LONG).show()
                     }
                     historicoAdapter.submitList(listaOriginal)
                 } else {
@@ -88,16 +88,20 @@ class ServicosHistorico : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<List<Servico>>, t: Throwable) {
-                Toast.makeText(this@ServicosHistorico, "Falha ao conectar com o servidor.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ServicosHistorico, "Erro de processamento/conexão: ${t.localizedMessage}", Toast.LENGTH_LONG).show()
             }
         })
     }
 
+    /**
+     * CORRIGIDO: Adicionado operadores de segurança (?.) e fallback para evitar erros de NullPointerException
+     */
     private fun filtrarLista(texto: String) {
         val textoMinusculo = texto.lowercase().trim()
         val listaFiltrada = listaOriginal.filter { servico ->
-            servico.tipoServ?.lowercase()?.contains(textoMinusculo) == true ||
-                    servico.Espec?.lowercase()?.contains(textoMinusculo) == true
+            val tipoBate = servico.tipoServ?.lowercase()?.contains(textoMinusculo) == true
+            val especBate = servico.Espec?.lowercase()?.contains(textoMinusculo) == true
+            tipoBate || especBate
         }
         historicoAdapter.submitList(listaFiltrada)
     }
@@ -106,7 +110,6 @@ class ServicosHistorico : AppCompatActivity() {
         // Menu Superior (MenuBar)
         binding.menubar.setOnClickListener {
             startActivity(Intent(this, MenuBar::class.java))
-            // Opcional: finish() aqui se quiser fechar o histórico ao abrir o menu
         }
 
         // Botões do Menu Inferior

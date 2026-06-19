@@ -29,7 +29,7 @@ class MenuServicesAdapter: ListAdapter<Servico, MenuServicesAdapter.MenuServices
     companion object {
         private val DIFF = object: DiffUtil.ItemCallback<Servico>() {
             override fun areItemsTheSame(oldItem: Servico, newItem: Servico): Boolean {
-                return oldItem == newItem
+                return oldItem.idServ == newItem.idServ
             }
 
             override fun areContentsTheSame(oldItem: Servico, newItem: Servico): Boolean {

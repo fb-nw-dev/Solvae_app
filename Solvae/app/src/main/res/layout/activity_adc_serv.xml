@@ -55,13 +55,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:hint="Tipo de Serviço">
+                android:hint="Tipo de Serviço"
+                android:textColorHint="#000000"
+                app:hintTextColor="#000000"
+                app:boxStrokeColor="#000000">
 
                 <AutoCompleteTextView
                     android:id="@+id/actvTipoServico"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:textColor="#000000" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -70,13 +74,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:hint="Especialidade">
+                android:hint="Especialidade"
+                android:textColorHint="#000000"
+                app:hintTextColor="#000000"
+                app:boxStrokeColor="#000000">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietEspecialidade"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:textColor="#000000" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -85,13 +93,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:hint="Valor (R$)">
+                android:hint="Valor (R$)"
+                android:textColorHint="#000000"
+                app:hintTextColor="#000000"
+                app:boxStrokeColor="#000000">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietValor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    android:textColor="#000000" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -100,7 +112,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:hint="Descrição do Serviço">
+                android:hint="Descrição do Serviço"
+                android:textColorHint="#000000"
+                app:hintTextColor="#000000"
+                app:boxStrokeColor="#000000">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tietDescricao"
@@ -108,7 +123,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="top|start"
                     android:inputType="textMultiLine"
-                    android:lines="4" />
+                    android:lines="4"
+                    android:textColor="#000000" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
