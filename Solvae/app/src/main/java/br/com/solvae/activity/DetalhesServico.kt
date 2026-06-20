@@ -137,7 +137,7 @@ class DetalhesServico : AppCompatActivity() {
                 1, 2 -> {
                     binding.btnCancelar.visibility = View.VISIBLE
                     binding.btnCancelar.text = "Cancelar Solicitação"
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico(4) }
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) } // CORRIGIDO: Era 4 (concluído), agora é 5 (cancelado)
                 }
             }
         } else {
@@ -145,7 +145,7 @@ class DetalhesServico : AppCompatActivity() {
                 0 -> {
                     binding.btnCancelar.visibility = View.VISIBLE
                     binding.btnCancelar.text = "Cancelar Anúncio"
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico(4) }
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) } // CORRIGIDO: Mudado de 4 para 5
                 }
                 1 -> {
                     binding.btnAceitar.visibility = View.VISIBLE
@@ -153,24 +153,31 @@ class DetalhesServico : AppCompatActivity() {
                     binding.btnCancelar.text = "Recusar Solicitação"
 
                     binding.btnAceitar.setOnClickListener { alterarStatusServico(2) }
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico(4) }
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) } // CORRIGIDO: Mudado de 4 para 5
                 }
                 2 -> {
                     binding.btnConcluir.visibility = View.VISIBLE
                     binding.btnCancelar.visibility = View.VISIBLE
                     binding.btnCancelar.text = "Cancelar Serviço"
 
-                    binding.btnConcluir.setOnClickListener { alterarStatusServico(3) }
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico(4) }
+                    binding.btnConcluir.setOnClickListener { alterarStatusServico(4) } // ADICIONADO: Faltava a ação do botão Concluir (4)
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) } // Mantido 5 para Cancelar
                 }
-                3, 4 -> {
+                3 -> {
+                    binding.btnSolicitar.visibility = View.VISIBLE
+                    binding.btnSolicitar.text = "Confirmar"
+                    binding.btnSolicitar.setBackgroundColor(android.graphics.Color.parseColor("#FF9800"))
+
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) } // CORRIGIDO: Mudado de 4 para 5
+                }
+                4, 5 -> {
                     binding.btnSolicitar.visibility = View.VISIBLE
                     binding.btnSolicitar.text = "Anunciar Novamente"
                     binding.btnSolicitar.setBackgroundColor(android.graphics.Color.parseColor("#FF9800"))
                     binding.btnSolicitar.setOnClickListener { reanunciarServico() }
                 }
-            }
-        }
+            } // Fechamento do when(status) que estava faltando
+        } // Fechamento do else que estava faltando
     }
 
     private fun alterarStatusServico(novoStatus: Int) {
@@ -208,8 +215,6 @@ class DetalhesServico : AppCompatActivity() {
         )
 
         val api = RetrofitClient.instancia
-
-        // CORRIGIDO: Recupera o idServ com segurança e o passa na rota @PUT mapeada na ApiService
         val idDoServico = servicoAtualizado.idServ ?: 0
 
         api.atualizarServico(idDoServico, servicoAtualizado).enqueue(object : Callback<Servico> {
@@ -226,7 +231,7 @@ class DetalhesServico : AppCompatActivity() {
                 Toast.makeText(this@DetalhesServico, "Erro de conexão com o servidor.", Toast.LENGTH_SHORT).show()
             }
         })
-    }
+    } // Fechamento da função alterarStatusServico que faltava no seu código
 
     private fun reanunciarServico() {
         val servico = servicoSelecionado ?: return

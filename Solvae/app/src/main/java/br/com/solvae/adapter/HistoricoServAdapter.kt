@@ -49,8 +49,8 @@ class HistoricoServAdapter: ListAdapter<Servico , HistoricoServAdapter.Historico
             // CORRIGIDO: Agora comparando com inteiros (Int) de 0 a 5 em vez de Strings
             when (historico.statusServ) {
                 0 -> {
-                    itemHistoricoBinding.tvStatusServ.text = "Cancelado"
-                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.RED) // Vermelho
+                    itemHistoricoBinding.tvStatusServ.text = "Aberto"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#757575")) // Vermelho
                 }
                 1 -> {
                     itemHistoricoBinding.tvStatusServ.text = "Aguardando Aprovação"
@@ -61,16 +61,16 @@ class HistoricoServAdapter: ListAdapter<Servico , HistoricoServAdapter.Historico
                     itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#2196F3")) // Azul
                 }
                 3 -> {
-                    itemHistoricoBinding.tvStatusServ.text = "Pendente de Peças"
-                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#E91E63")) // Rosa/Alerta
+                    itemHistoricoBinding.tvStatusServ.text = "Confirmado"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#2E7D32")) // verde esmeralda
                 }
                 4 -> {
                     itemHistoricoBinding.tvStatusServ.text = "Concluído"
                     itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#4CAF50")) // Verde
                 }
                 5 -> {
-                    itemHistoricoBinding.tvStatusServ.text = "Faturado"
-                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.parseColor("#757575")) // Cinza
+                    itemHistoricoBinding.tvStatusServ.text = "cancelado"
+                    itemHistoricoBinding.tvStatusServ.setTextColor(Color.RED) // Cinza
                 }
                 else -> {
                     itemHistoricoBinding.tvStatusServ.text = "Desconhecido"

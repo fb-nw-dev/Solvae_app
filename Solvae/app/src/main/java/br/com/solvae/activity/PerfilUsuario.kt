@@ -14,6 +14,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PerfilUsuario : AppCompatActivity() {
@@ -30,7 +31,6 @@ class PerfilUsuario : AppCompatActivity() {
         idUsuario = prefs.getInt("ID_USUARIO", -1)
         tipoUsuario = prefs.getString("TIPO_USUARIO", null)
 
-        // FEEDBACK DE DIAGNÓSTICO: Se os dados sumirem, esse Toast vai te dizer se o ID veio zerado/vazio do Login
         if (idUsuario == -1 || tipoUsuario.isNullOrEmpty()) {
             Toast.makeText(this, "Erro: Usuário não identificado no SharedPreferences.", Toast.LENGTH_LONG).show()
         }
@@ -48,7 +48,6 @@ class PerfilUsuario : AppCompatActivity() {
             } else {
                 Intent(this, EditarPerfilPJ::class.java)
             }
-            // Passa o ID adiante para a tela de edição saber quem alterar
             intent.putExtra("ID_USUARIO", idUsuario)
             startActivity(intent)
         }
@@ -93,13 +92,16 @@ class PerfilUsuario : AppCompatActivity() {
 
     private fun preencherPF(pf: PessoaFisica) {
         binding.tvPerfilNome.text = pf.nome
-        binding.tvPerfilDocumento.text = "CPF: ${pf.cpf}"
-        binding.tvPerfilTelefone.text = "Telefone: ${pf.telefone}"
+
+        // FORMATADO: CPF, Telefone e CEP com máscara na visualização
+        binding.tvPerfilDocumento.text = "CPF: ${formatarCpf(pf.cpf)}"
+        binding.tvPerfilTelefone.text = "Telefone: ${formatarTelefone(pf.telefone)}"
         binding.tvPerfilCidade.text = "Cidade: ${pf.cidade}"
-        binding.tvPerfilCep.text = "CEP: ${pf.cep}"
+        binding.tvPerfilCep.text = "CEP: ${formatarCep(pf.cep)}"
+
         binding.tvPerfilRua.text = "Rua: ${pf.rua}"
         binding.tvPerfilBairro.text = "Bairro: ${pf.bairro}"
-        binding.tvPerfilDataNasc.text = "Nascimento: ${pf.dataNasc}"
+        binding.tvPerfilDataNasc.text = "Nascimento: ${formatarData(pf.dataNasc)}"
         binding.tvPerfilSexo.text = "Sexo: ${pf.sexo}"
 
         binding.tvPerfilDataNasc.visibility = View.VISIBLE
@@ -111,20 +113,21 @@ class PerfilUsuario : AppCompatActivity() {
 
     private fun preencherPJ(emp: Empresa) {
         binding.tvPerfilNome.text = emp.nome
-        binding.tvPerfilDocumento.text = "CNPJ: ${emp.cnpj}"
-        binding.tvPerfilTelefone.text = "Telefone: ${emp.telefone}"
+
+        // FORMATADO: CNPJ, Telefone e CEP com máscara na visualização
+        binding.tvPerfilDocumento.text = "CNPJ: ${formatarCnpj(emp.cnpj)}"
+        binding.tvPerfilTelefone.text = "Telefone: ${formatarTelefone(emp.telefone)}"
         binding.tvPerfilCidade.text = "Cidade: ${emp.cidade}"
-        binding.tvPerfilCep.text = "CEP: ${emp.cep}"
+        binding.tvPerfilCep.text = "CEP: ${formatarCep(emp.cep)}"
+
         binding.tvPerfilRua.text = "Rua: ${emp.rua}"
         binding.tvPerfilBairro.text = "Bairro: ${emp.bairro}"
         binding.tvPerfilRazaoSocial.text = "Razão Social: ${emp.razaoSocial}"
         binding.tvPerfilCnae.text = "CNAE: ${emp.cnae}"
         binding.tvPerfilUf.text = "UF: ${emp.uf}"
 
-        // BÔNUS EXTRA: Formata o Capital Social recebido da API de volta para "R$ X.XXX,XX" na visualização
         try {
             val formatado = NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(emp.capitalSocial)
-            // Se você tiver um TextView para o capital social no XML, mude o ID abaixo para o correto:
             // binding.tvPerfilCapitalSocial.text = "Capital Social: $formatado"
         } catch (e: Exception) { e.printStackTrace() }
 
@@ -133,5 +136,51 @@ class PerfilUsuario : AppCompatActivity() {
         binding.tvPerfilRazaoSocial.visibility = View.VISIBLE
         binding.tvPerfilCnae.visibility = View.VISIBLE
         binding.tvPerfilUf.visibility = View.VISIBLE
+    }
+
+    // --- FUNÇÕES DE FORMATAÇÃO (MÁSCARAS VISUAIS) ---
+
+    private fun formatarData(dataRaw: String?): String {
+        if (dataRaw.isNullOrEmpty() || dataRaw == "0000-00-00") return "Não informada"
+        return try {
+            val formatoOriginal = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val formatoDestino = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
+            val dataParseada = formatoOriginal.parse(dataRaw)
+            formatoDestino.format(dataParseada)
+        } catch (e: Exception) { dataRaw }
+    }
+
+    private fun formatarCpf(cpfRaw: String?): String {
+        if (cpfRaw.isNullOrEmpty()) return ""
+        val digitos = cpfRaw.replace(Regex("[^0-9]"), "")
+        return if (digitos.length == 11) {
+            "${digitos.substring(0, 3)}.${digitos.substring(3, 6)}.${digitos.substring(6, 9)}-${digitos.substring(9)}"
+        } else cpfRaw
+    }
+
+    private fun formatarCnpj(cnpjRaw: String?): String {
+        if (cnpjRaw.isNullOrEmpty()) return ""
+        val digitos = cnpjRaw.replace(Regex("[^0-9]"), "")
+        return if (digitos.length == 14) {
+            "${digitos.substring(0, 2)}.${digitos.substring(2, 5)}.${digitos.substring(5, 8)}/${digitos.substring(8, 12)}-${digitos.substring(12)}"
+        } else cnpjRaw
+    }
+
+    private fun formatarTelefone(telRaw: String?): String {
+        if (telRaw.isNullOrEmpty()) return ""
+        val digitos = telRaw.replace(Regex("[^0-9]"), "")
+        return when (digitos.length) {
+            11 -> "(${digitos.substring(0, 2)}) ${digitos.substring(2, 7)}-${digitos.substring(7)}" // Celular: (XX) XXXXX-XXXX
+            10 -> "(${digitos.substring(0, 2)}) ${digitos.substring(2, 6)}-${digitos.substring(6)}" // Fixo: (XX) XXXX-XXXX
+            else -> telRaw
+        }
+    }
+
+    private fun formatarCep(cepRaw: String?): String {
+        if (cepRaw.isNullOrEmpty()) return ""
+        val digitos = cepRaw.replace(Regex("[^0-9]"), "")
+        return if (digitos.length == 8) {
+            "${digitos.substring(0, 5)}-${digitos.substring(5)}" // XXXXX-XXX
+        } else cepRaw
     }
 }

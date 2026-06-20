@@ -307,7 +307,7 @@
                     app:boxStrokeColor="@color/black"
                     android:hint="Data de Abertura"
                     app:endIconMode="custom"
-                    app:endIconDrawable="@android:drawable/ic_menu_my_calendar">
+                    app:endIconDrawable="@drawable/calendar">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietDataAbertura"

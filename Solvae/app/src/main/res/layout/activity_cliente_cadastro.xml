@@ -106,7 +106,7 @@
                     app:boxStrokeColor="@color/black"
                     android:hint="Data de Nascimento"
                     app:endIconMode="custom"
-                    app:endIconDrawable="@android:drawable/ic_menu_my_calendar">
+                    app:endIconDrawable="@drawable/calendar">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietDataNascimento"
@@ -115,7 +115,8 @@
                         android:textColor="@color/black"
                         android:focusable="false"
                         android:clickable="true"
-                        android:inputType="none" />
+                        android:inputType="none"
+                        />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout

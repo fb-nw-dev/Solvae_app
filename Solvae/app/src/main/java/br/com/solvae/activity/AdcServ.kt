@@ -161,7 +161,7 @@ class AdcServ : AppCompatActivity() {
             tipoServ = tipoServico,
             Espec = specialty,
             valorServ = valorDouble,
-            statusServ = 1,
+            statusServ = 0,
             dtContratacao = "2026-06-19",
             local = null,
             descricao = descricao,
