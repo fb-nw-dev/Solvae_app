@@ -45,7 +45,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Nome">
+                    android:hint="Nome *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietNome"
@@ -65,7 +65,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Email">
+                    android:hint="Email *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietEmail"
@@ -85,7 +85,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="CNPJ">
+                    android:hint="CNPJ *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietCnpj"
@@ -105,7 +105,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Razão Social">
+                    android:hint="Razão Social *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietRazaoSocial"
@@ -125,7 +125,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Tipo de Empresa">
+                    android:hint="Tipo de Empresa *" >
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietTipoEmpresa"
@@ -145,7 +145,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="CNAE">
+                    android:hint="CNAE *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietCnae"
@@ -165,7 +165,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Telefone">
+                    android:hint="Telefone *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietTelefone"
@@ -185,7 +185,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="CEP">
+                    android:hint="CEP *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietCep"
@@ -329,7 +329,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Capital Social">
+                    android:hint="Capital Social *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietCapitalSocial"
@@ -349,7 +349,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Senha"
+                    android:hint="Senha *"
                     app:passwordToggleEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText

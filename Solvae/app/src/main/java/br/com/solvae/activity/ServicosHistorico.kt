@@ -25,10 +25,12 @@ class ServicosHistorico : AppCompatActivity() {
     private var listaOriginal: List<Servico> = emptyList()
     private val historicoAdapter by lazy { HistoricoServAdapter() }
 
+    // 1. onCreate: Roda UMA VEZ para montar a tela e os botões
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        // Configura o Adapter e os cliques
         binding.rvHistorico.adapter = historicoAdapter
 
         historicoAdapter.itemClickHistorico = { posicao ->
@@ -38,7 +40,7 @@ class ServicosHistorico : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // 1. Controle do Botão de Pesquisa
+        // Controle do Botão de Pesquisa
         binding.searchButton.setOnClickListener {
             if (binding.editSearch.visibility == View.GONE) {
                 binding.editSearch.visibility = View.VISIBLE
@@ -58,7 +60,14 @@ class ServicosHistorico : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // 3. Recuperar ID do Usuário
+        configurarMenuInferior()
+    }
+
+    // 2. onResume: Roda TODA VEZ que a tela aparece para buscar os dados frescos
+    override fun onResume() {
+        super.onResume()
+
+        // Recuperar ID do Usuário e chamar a API
         val sharedPreferences = getSharedPreferences("SOLVAE_PREFS", Context.MODE_PRIVATE)
         val idUsuarioLogado = sharedPreferences.getInt("ID_USUARIO", -1)
 
@@ -67,8 +76,6 @@ class ServicosHistorico : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Usuário não identificado. Faça login novamente.", Toast.LENGTH_SHORT).show()
         }
-
-        configurarMenuInferior()
     }
 
     private fun carregarHistoricoDoUsuario(usuarioId: Int) {
@@ -93,9 +100,6 @@ class ServicosHistorico : AppCompatActivity() {
         })
     }
 
-    /**
-     * CORRIGIDO: Adicionado operadores de segurança (?.) e fallback para evitar erros de NullPointerException
-     */
     private fun filtrarLista(texto: String) {
         val textoMinusculo = texto.lowercase().trim()
         val listaFiltrada = listaOriginal.filter { servico ->

@@ -11,6 +11,6 @@
     <string name="btn_cadastrar">CADASTRAR</string>
     <string name="btn_cadEmpresa">clique aqui caso tenha um CNPJ para se cadastrar como empresa</string>
     <string name="btn_cadPF">clique aqui para se cadastrar como pessoa fisica</string>
-
+    <string name="recallsenha">Clique aqui se esqueceu a senha</string>
 
 </resources>

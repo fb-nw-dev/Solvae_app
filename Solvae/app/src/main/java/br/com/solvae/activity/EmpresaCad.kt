@@ -142,6 +142,21 @@ class EmpresaCad : AppCompatActivity() {
     }
 
     private fun executarCadastro() {
+        var formularioValido = true
+
+        // 1. Limpa os erros visuais antes de fazer a validação
+        binding.tilNome.error = null
+        binding.tilEmail.error = null
+        binding.tilCnpj.error = null
+        binding.tilRazaoSocial.error = null
+        binding.tilTipoEmpresa.error = null
+        binding.tilCnae.error = null
+        binding.tilTelefone.error = null
+        binding.tilCep.error = null
+        binding.tilCapitalSocial.error = null
+        binding.tilSenha.error = null
+
+        // 2. Coleta dos dados
         val nome = binding.tietNome.text.toString().trim()
         val email = binding.tietEmail.text.toString().trim()
         val senha = binding.tietSenha.text.toString().trim()
@@ -160,31 +175,56 @@ class EmpresaCad : AppCompatActivity() {
         val numStr = binding.tietNumero.text.toString().trim()
         val cepPuro = binding.tietCep.text.toString().replace(Regex("[^0-9]"), "").trim()
 
-        // CORREÇÃO DATA: Converte dd/MM/yyyy para yyyy-MM-dd antes de salvar/enviar à API
+        val capitalStr = binding.tietCapitalSocial.text.toString().trim()
+
+        // 3. Validação dos campos obrigatórios e formatos
+
+        if (nome.isEmpty()) { binding.tilNome.error = "Campo obrigatório"; formularioValido = false }
+
+        // --- NOVA VALIDAÇÃO DE EMAIL AQUI ---
+        if (email.isEmpty()) {
+            binding.tilEmail.error = "Campo obrigatório"
+            formularioValido = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.tilEmail.error = "Digite um formato de email válido"
+            formularioValido = false
+        }
+        // ------------------------------------
+
+        if (razaoSocial.isEmpty()) { binding.tilRazaoSocial.error = "Campo obrigatório"; formularioValido = false }
+        if (tipoEmpresa.isEmpty()) { binding.tilTipoEmpresa.error = "Campo obrigatório"; formularioValido = false }
+        if (cnaeStr.isEmpty()) { binding.tilCnae.error = "Campo obrigatório"; formularioValido = false }
+        if (telefonePuro.isEmpty()) { binding.tilTelefone.error = "Campo obrigatório"; formularioValido = false }
+        if (cepPuro.isEmpty()) { binding.tilCep.error = "Campo obrigatório"; formularioValido = false }
+        if (capitalStr.isEmpty()) { binding.tilCapitalSocial.error = "Campo obrigatório"; formularioValido = false }
+        if (senha.isEmpty()) { binding.tilSenha.error = "Campo obrigatório"; formularioValido = false }
+
+        // Tratamento especial para o CNPJ (se estiver vazio OU inválido)
+        if (cnpjPuro.isEmpty()) {
+            binding.tilCnpj.error = "Campo obrigatório"
+            formularioValido = false
+        } else if (!validarCNPJ(cnpjPuro)) {
+            binding.tilCnpj.error = "CNPJ inválido!"
+            formularioValido = false
+            Toast.makeText(this, "Por favor, digite um CNPJ válido.", Toast.LENGTH_LONG).show()
+        }
+
+        // Se encontrou algum erro (alguma caixa ficou vermelha), a função para por aqui e não vai para a API.
+        if (!formularioValido) {
+            Toast.makeText(this, "Verifique os campos obrigatórios em vermelho.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // --- DAQUI PARA BAIXO O CÓDIGO SÓ RODA SE TUDO ESTIVER PREENCHIDO CORRETAMENTE ---
+
+        // Tratamento da Data e Capital Social
         val dataAbertura = binding.tietDataAbertura.text.toString().trim()
         val dataAberturaFormatada = formatarDataParaAPI(dataAbertura)
 
-        // TRATAMENTO DA MÁSCARA MONETÁRIA:
-        val capitalStr = binding.tietCapitalSocial.text.toString().trim()
         val capitalLimpo = capitalStr.replace(Regex("[^0-9]"), "")
-        val capitalSocialDouble = if (capitalLimpo.isNotEmpty()) {
-            capitalLimpo.toDouble() / 100
-        } else {
-            0.0
-        }
+        val capitalSocialDouble = if (capitalLimpo.isNotEmpty()) capitalLimpo.toDouble() / 100 else 0.0
 
-        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || cnpjPuro.isEmpty()) {
-            Toast.makeText(this, "Preencha os campos obrigatórios!", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (!validarCNPJ(cnpjPuro)) {
-            binding.tietCnpj.error = "CNPJ inválido!"
-            binding.tietCnpj.requestFocus()
-            Toast.makeText(this, "Por favor, digite um CNPJ válido.", Toast.LENGTH_LONG).show()
-            return
-        }
-
+        // Configuração dos objetos de envio
         val dadosLogin = Login(
             email = email,
             senha = senha,
@@ -197,7 +237,7 @@ class EmpresaCad : AppCompatActivity() {
             cnae = cnaeStr.toIntOrNull() ?: 0,
             cnpj = cnpjPuro,
             razaoSocial = razaoSocial,
-            dataAbertura = dataAberturaFormatada, // Enviando data corrigida (yyyy-MM-dd)
+            dataAbertura = dataAberturaFormatada,
             capitalSocial = capitalSocialDouble,
             tipoEmpresa = tipoEmpresa,
             statusEmp = 1,
@@ -211,13 +251,13 @@ class EmpresaCad : AppCompatActivity() {
             login = dadosLogin
         )
 
+        // Chamada da API
         val api = RetrofitClient.instancia
         api.cadastrarEmpresa(novaEmpresa).enqueue(object : Callback<Empresa> {
             override fun onResponse(call: Call<Empresa>, response: Response<Empresa>) {
                 if (response.isSuccessful) {
                     Toast.makeText(this@EmpresaCad, "Empresa ${response.body()?.nome} cadastrada!", Toast.LENGTH_SHORT).show()
 
-                    // CORREÇÃO: Direciona para a tela de Login e limpa o histórico de telas
                     val intent = android.content.Intent(this@EmpresaCad, LoginActv::class.java)
                     intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)

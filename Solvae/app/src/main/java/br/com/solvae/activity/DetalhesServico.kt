@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.solvae.api.RetrofitClient
 import br.com.solvae.databinding.ActivityDetalhesServicoBinding
+import br.com.solvae.model.Empresa
+import br.com.solvae.model.PessoaFisica
 import br.com.solvae.model.Servico
 import retrofit2.Call
 import retrofit2.Callback
@@ -91,12 +93,48 @@ class DetalhesServico : AppCompatActivity() {
                 binding.tilQuantidadeServico.visibility = View.GONE
                 binding.tilLocalServico.visibility = View.GONE
             } else {
-                binding.tvNomeAnunciante.text = "Prestador ID: ${servico.idEmpresa ?: servico.idPF}"
+                // --- NOVA LÓGICA: Buscar nome na API ---
+
+                binding.tvNomeAnunciante.text = "Carregando nome..."
                 binding.tvContatoAnunciante.text = "Contato liberado após a solicitação."
                 binding.tvLocalizacaoAnunciante.text = "Localização flexível conforme combinado."
 
                 binding.tilQuantidadeServico.visibility = View.VISIBLE
                 binding.tilLocalServico.visibility = View.VISIBLE
+
+                val api = RetrofitClient.instancia
+
+                if (servico.idEmpresa != null && servico.idEmpresa > 0) {
+                    api.obterEmpresaPorId(servico.idEmpresa).enqueue(object : Callback<Empresa> {
+                        override fun onResponse(call: Call<Empresa>, response: Response<Empresa>) {
+                            if (response.isSuccessful && response.body() != null) {
+                                binding.tvNomeAnunciante.text = "Anunciante: ${response.body()?.nome}"
+                            } else {
+                                binding.tvNomeAnunciante.text = "Anunciante ID: ${servico.idEmpresa}"
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Empresa>, t: Throwable) {
+                            binding.tvNomeAnunciante.text = "Erro ao carregar nome"
+                        }
+                    })
+                } else if (servico.idPF != null && servico.idPF > 0) {
+                    api.obterPessoaFisicaPorId(servico.idPF).enqueue(object : Callback<PessoaFisica> {
+                        override fun onResponse(call: Call<PessoaFisica>, response: Response<PessoaFisica>) {
+                            if (response.isSuccessful && response.body() != null) {
+                                binding.tvNomeAnunciante.text = "Anunciante: ${response.body()?.nome}"
+                            } else {
+                                binding.tvNomeAnunciante.text = "Anunciante ID: ${servico.idPF}"
+                            }
+                        }
+
+                        override fun onFailure(call: Call<PessoaFisica>, t: Throwable) {
+                            binding.tvNomeAnunciante.text = "Erro ao carregar nome"
+                        }
+                    })
+                } else {
+                    binding.tvNomeAnunciante.text = "Anunciante não identificado"
+                }
             }
         }
     }
@@ -137,7 +175,7 @@ class DetalhesServico : AppCompatActivity() {
                 1, 2 -> {
                     binding.btnCancelar.visibility = View.VISIBLE
                     binding.btnCancelar.text = "Cancelar Solicitação"
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) } // CORRIGIDO: Era 4 (concluído), agora é 5 (cancelado)
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) }
                 }
             }
         } else {
@@ -145,7 +183,7 @@ class DetalhesServico : AppCompatActivity() {
                 0 -> {
                     binding.btnCancelar.visibility = View.VISIBLE
                     binding.btnCancelar.text = "Cancelar Anúncio"
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) } // CORRIGIDO: Mudado de 4 para 5
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) }
                 }
                 1 -> {
                     binding.btnAceitar.visibility = View.VISIBLE
@@ -153,22 +191,22 @@ class DetalhesServico : AppCompatActivity() {
                     binding.btnCancelar.text = "Recusar Solicitação"
 
                     binding.btnAceitar.setOnClickListener { alterarStatusServico(2) }
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) } // CORRIGIDO: Mudado de 4 para 5
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) }
                 }
                 2 -> {
                     binding.btnConcluir.visibility = View.VISIBLE
                     binding.btnCancelar.visibility = View.VISIBLE
                     binding.btnCancelar.text = "Cancelar Serviço"
 
-                    binding.btnConcluir.setOnClickListener { alterarStatusServico(4) } // ADICIONADO: Faltava a ação do botão Concluir (4)
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) } // Mantido 5 para Cancelar
+                    binding.btnConcluir.setOnClickListener { alterarStatusServico(4) }
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) }
                 }
                 3 -> {
                     binding.btnSolicitar.visibility = View.VISIBLE
                     binding.btnSolicitar.text = "Confirmar"
                     binding.btnSolicitar.setBackgroundColor(android.graphics.Color.parseColor("#FF9800"))
 
-                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) } // CORRIGIDO: Mudado de 4 para 5
+                    binding.btnCancelar.setOnClickListener { alterarStatusServico(5) }
                 }
                 4, 5 -> {
                     binding.btnSolicitar.visibility = View.VISIBLE
@@ -176,8 +214,8 @@ class DetalhesServico : AppCompatActivity() {
                     binding.btnSolicitar.setBackgroundColor(android.graphics.Color.parseColor("#FF9800"))
                     binding.btnSolicitar.setOnClickListener { reanunciarServico() }
                 }
-            } // Fechamento do when(status) que estava faltando
-        } // Fechamento do else que estava faltando
+            }
+        }
     }
 
     private fun alterarStatusServico(novoStatus: Int) {
@@ -231,7 +269,7 @@ class DetalhesServico : AppCompatActivity() {
                 Toast.makeText(this@DetalhesServico, "Erro de conexão com o servidor.", Toast.LENGTH_SHORT).show()
             }
         })
-    } // Fechamento da função alterarStatusServico que faltava no seu código
+    }
 
     private fun reanunciarServico() {
         val servico = servicoSelecionado ?: return

@@ -5,6 +5,7 @@ import br.com.solvae.model.Login
 import br.com.solvae.model.PessoaFisica
 import br.com.solvae.model.Servico
 import br.com.solvae.model.CepResponse
+import br.com.solvae.model.RecuperarSenhaRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -45,6 +46,8 @@ interface ApiService {
     @PUT("usuarios/empresa/{id}")
     fun atualizarEmpresa(@Path("id") id: Int, @Body empresaAtualizada: Empresa): Call<Empresa>
 
+    @PUT("usuarios/recuperar-senha")
+    fun recuperarSenha(@Body dados: RecuperarSenhaRequest): Call<Void>
     // --- BUSCAS E LISTAGENS ---
 
     // Busca a lista de todos os serviços cadastrados no servidor

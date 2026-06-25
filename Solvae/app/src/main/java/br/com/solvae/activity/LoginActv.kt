@@ -29,6 +29,10 @@ class LoginActv : AppCompatActivity() {
         binding.tvcadastro.setOnClickListener {
             startActivity(Intent(this, SelectCad::class.java))
         }
+
+        binding.tvRecallSenha.setOnClickListener {
+            startActivity(Intent(this, RecallSenha::class.java))
+        }
     }
 
     private fun fazerLogin() {

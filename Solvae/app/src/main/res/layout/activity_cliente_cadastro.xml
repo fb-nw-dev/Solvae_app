@@ -45,7 +45,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Nome">
+                    android:hint="Nome *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietNome"
@@ -64,7 +64,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Email">
+                    android:hint="Email *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietEmail"
@@ -83,7 +83,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="CPF">
+                    android:hint="CPF *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietCpf"
@@ -104,7 +104,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Data de Nascimento"
+                    android:hint="Data de Nascimento *"
                     app:endIconMode="custom"
                     app:endIconDrawable="@drawable/calendar">
 
@@ -129,7 +129,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
-                        android:text="Gênero:"
+                        android:text="Gênero: *"
                         android:textSize="16sp"
                         android:textColor="@color/black" />
 
@@ -178,7 +178,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Telefone">
+                    android:hint="Telefone *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietTelefone"
@@ -186,6 +186,27 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:inputType="phone"
+                        android:importantForAutofill="no"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilCep"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    app:hintTextColor="@color/black"
+                    android:textColorHint="@color/black"
+                    app:boxStrokeColor="@color/black"
+                    android:hint="CEP *">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tietCep"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:inputType="number"
                         android:importantForAutofill="no"
                         />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -256,7 +277,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Número">
+                    android:hint="Número *">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tietNumero"
@@ -268,27 +289,6 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilCep"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:hintTextColor="@color/black"
-                    android:textColorHint="@color/black"
-                    app:boxStrokeColor="@color/black"
-                    android:hint="CEP">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tietCep"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:inputType="number"
-                        android:importantForAutofill="no"
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilSenha"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
@@ -297,7 +297,7 @@
                     app:hintTextColor="@color/black"
                     android:textColorHint="@color/black"
                     app:boxStrokeColor="@color/black"
-                    android:hint="Senha"
+                    android:hint="Senha *"
                     app:passwordToggleEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText

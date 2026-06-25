@@ -143,13 +143,24 @@ class ClienteCad : AppCompatActivity() {
     }
 
     private fun executarCadastro() {
+        var formularioValido = true
+
+        // 1. Limpa os erros visuais antes de fazer a validação
+        binding.tilNome.error = null
+        binding.tilEmail.error = null
+        binding.tilCpf.error = null
+        binding.tilDataNascimento.error = null
+        binding.tilTelefone.error = null
+        binding.tilCep.error = null
+        binding.tilNumero.error = null
+        binding.tilSenha.error = null
+
+        // 2. Coleta dos dados
         val nome = binding.tietNome.text.toString().trim()
         val email = binding.tietEmail.text.toString().trim()
         val senha = binding.tietSenha.text.toString().trim()
 
-        // Coleta o valor com máscara para validação de campos vazios
         val cpfComMascara = binding.tietCpf.text.toString().trim()
-        // Limpa a string para validação matemática e envio limpo para a API
         val cpfPuro = cpfComMascara.replace(Regex("[^0-9]"), "")
 
         val dataNasc = binding.tietDataNascimento.text.toString().trim()
@@ -160,33 +171,59 @@ class ClienteCad : AppCompatActivity() {
         val numeroStr = binding.tietNumero.text.toString().trim()
         val cepPuro = binding.tietCep.text.toString().replace(Regex("[^0-9]"), "").trim()
 
-        // Mapeamento atualizado incluindo o botão Novo (rbOutros)
+        // 3. Validação dos campos obrigatórios e formatos
+
+        if (nome.isEmpty()) { binding.tilNome.error = "Campo obrigatório"; formularioValido = false }
+
+        // Validação de Email (vazio ou formato incorreto)
+        if (email.isEmpty()) {
+            binding.tilEmail.error = "Campo obrigatório"
+            formularioValido = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.tilEmail.error = "Digite um formato de email válido"
+            formularioValido = false
+        }
+
+        if (dataNasc.isEmpty()) { binding.tilDataNascimento.error = "Campo obrigatório"; formularioValido = false }
+        if (telefonePuro.isEmpty()) { binding.tilTelefone.error = "Campo obrigatório"; formularioValido = false }
+        if (cepPuro.isEmpty()) { binding.tilCep.error = "Campo obrigatório"; formularioValido = false }
+        if (numeroStr.isEmpty()) { binding.tilNumero.error = "Campo obrigatório"; formularioValido = false }
+        if (senha.isEmpty()) { binding.tilSenha.error = "Campo obrigatório"; formularioValido = false }
+
+        // Validação do CPF (se estiver vazio OU inválido na matemática)
+        if (cpfPuro.isEmpty()) {
+            binding.tilCpf.error = "Campo obrigatório"
+            formularioValido = false
+        } else if (!validarCPF(cpfPuro)) {
+            binding.tilCpf.error = "CPF inválido!"
+            formularioValido = false
+            Toast.makeText(this, "Por favor, digite um CPF válido.", Toast.LENGTH_LONG).show()
+        }
+
+        // Validação do RadioGroup (Gênero)
+        if (binding.rgSexo.checkedRadioButtonId == -1) {
+            formularioValido = false
+            Toast.makeText(this, "Por favor, selecione o Gênero.", Toast.LENGTH_SHORT).show()
+        }
+
+        // Se encontrou algum erro, para a execução e não envia para a API
+        if (!formularioValido) {
+            Toast.makeText(this, "Verifique os campos obrigatórios em vermelho.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // --- DAQUI PARA BAIXO O CÓDIGO SÓ RODA SE TUDO ESTIVER PREENCHIDO CORRETAMENTE ---
+
+        // Desativa o botão para bloquear clicks duplos/múltiplos na requisição assíncrona
+        binding.btnCadastrar.isEnabled = false
+
+        // Mapeamento do sexo após confirmar que algo foi selecionado
         val sexo = when (binding.rgSexo.checkedRadioButtonId) {
             binding.rbMasculino.id -> "Masculino"
             binding.rbFeminino.id -> "Feminino"
             binding.rbOutros.id -> "Outros"
             else -> "Não Informado"
         }
-
-        // Validação expandida para garantir consistência de dados antes do envio
-        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || cpfPuro.isEmpty() ||
-            dataNasc.isEmpty() || telefonePuro.isEmpty() || cepPuro.isEmpty() ||
-            rua.isEmpty() || bairro.isEmpty() || cidade.isEmpty() || numeroStr.isEmpty()) {
-
-            Toast.makeText(this, "Por favor, preencha todos os campos obrigatórios!", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // EXECUÇÃO DO VALIDADOR MATEMÁTICO DE CPF
-        if (!validarCPF(cpfPuro)) {
-            binding.tietCpf.error = "CPF inválido!"
-            binding.tietCpf.requestFocus()
-            Toast.makeText(this, "Por favor, digite um CPF válido.", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        // Desativa o botão para bloquear clicks duplos/múltiplos na requisição assíncrona
-        binding.btnCadastrar.isEnabled = false
 
         val dadosLogin = Login(
             email = email,
@@ -199,15 +236,15 @@ class ClienteCad : AppCompatActivity() {
 
         val novaPf = PessoaFisica(
             nome = nome,
-            dataNasc = dataNascFormatada, // <-- Aqui agora vai o formato correto!
-            cep = cepPuro,          // Salva apenas números
+            dataNasc = dataNascFormatada,
+            cep = cepPuro,
             rua = rua,
             bairro = bairro,
             cidade = cidade,
             numero = numeroStr.toIntOrNull(),
-            telefone = telefonePuro,  // Salva apenas números
+            telefone = telefonePuro,
             sexo = sexo,
-            cpf = cpfPuro,            // Salva apenas números
+            cpf = cpfPuro,
             usuarioLoginId = 0,
             login = dadosLogin
         )
@@ -218,7 +255,6 @@ class ClienteCad : AppCompatActivity() {
                 if (response.isSuccessful) {
                     Toast.makeText(this@ClienteCad, "Cadastro de ${response.body()?.nome} realizado!", Toast.LENGTH_SHORT).show()
 
-                    // CORREÇÃO: Direciona para a tela de Login e limpa o histórico de telas
                     val intent = android.content.Intent(this@ClienteCad, LoginActv::class.java)
                     intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
@@ -252,13 +288,12 @@ class ClienteCad : AppCompatActivity() {
             val data = formatoEntrada.parse(dataBr)
             formatoSaida.format(data!!)
         } catch (e: Exception) {
-            dataBr // Caso falhe, envia o original para não quebrar o fluxo
+            dataBr
         }
     }
 
     /**
      * Gerenciador dinâmico de máscaras rodando dentro do loop afterTextChanged.
-     * Corrigido para evitar loops de concorrência ou espelhamentos involuntários de dados entre os inputs.
      */
     private fun criarMascara(editText: com.google.android.material.textfield.TextInputEditText, mask: String): TextWatcher {
         return object : TextWatcher {
@@ -271,7 +306,6 @@ class ClienteCad : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 val strPura = s.toString().replace(Regex("[^0-9]"), "")
 
-                // Corta travas cíclicas e evita que eventos paralelos alterem a referência atual do EditText
                 if (isUpdating || strPura == oldString) return
 
                 isUpdating = true
@@ -294,7 +328,6 @@ class ClienteCad : AppCompatActivity() {
                     }
                 }
 
-                // Certifica que apenas o componente focalizado e modificado receba o novo texto formatado
                 if (s.toString() != mascara.toString()) {
                     editText.setText(mascara.toString())
                     editText.setSelection(mascara.length)
@@ -312,7 +345,6 @@ class ClienteCad : AppCompatActivity() {
         if (cpf.length != 11 || cpf.all { it == cpf[0] }) return false
 
         return try {
-            // Validação do primeiro dígito
             var soma = 0
             for (i in 0 until 9) {
                 soma += cpf[i].toString().toInt() * (10 - i)
@@ -320,7 +352,6 @@ class ClienteCad : AppCompatActivity() {
             var resto = soma % 11
             val digito1 = if (resto < 2) 0 else 11 - resto
 
-            // Validação do segundo dígito
             soma = 0
             for (i in 0 until 10) {
                 soma += cpf[i].toString().toInt() * (11 - i)
